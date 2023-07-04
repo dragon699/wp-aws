@@ -1,0 +1,19 @@
+- name: 'Deploying Wordpress'
+  hosts: all
+  become: true
+
+  tasks:
+
+  - name: Install updates
+    include_role:
+      name: updates
+  
+  - name: Install web server
+    include_role:
+      name: php
+    when: ('web_servers' in group_names)
+
+  - name: Install database
+    include_role:
+      name: mariadb
+    when: ('db' in group_names)

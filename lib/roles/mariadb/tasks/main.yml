@@ -1,0 +1,33 @@
+- name: 'install db service'
+  apt:
+    update_cache: true
+    name: '{{ mariadb_pkgs }}'
+
+- name: 'render db scripts'
+  template:
+    src: '{{ item }}'
+    dest: '/tmp/{{ dest_item }}'
+  loop: [
+    'secure_installation.sql.j2',
+    'create.sql.j2'
+  ]
+  loop_control:
+    label: '{{ item }}'
+  vars:
+    dest_item: '{{ item.split(".")[:-1] | join(".") }}'
+
+- name: 'run db scripts'
+  shell: 'mariadb < /tmp/{{ item }}'
+  loop: [
+    'secure_installation.sql',
+    'create.sql'
+  ]
+
+- name: 'remove db scripts'
+  file:
+    path: '/tmp/{{ item }}'
+    state: absent
+  loop: [
+    'secure_installation.sql',
+    'create.sql'
+  ]

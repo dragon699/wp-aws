@@ -1,0 +1,12 @@
+- name: 'install repository'
+  apt_repository:
+    repo: '{{ php_repo }}'
+
+- name: 'install apache2'
+  apt:
+    update_cache: true
+    name: '{{ apache2_pkg }}'
+
+- name: 'install php and database client'
+  apt:
+    name: '{{ php_pkgs + [mariadb_pkg] }}'

@@ -1,0 +1,4 @@
+mariadb_pkgs: [
+  'mariadb-client',
+  'mariadb-server',
+]

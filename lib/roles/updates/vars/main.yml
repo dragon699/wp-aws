@@ -1,0 +1,9 @@
+requirements: [
+  'ca-certificates',
+  'apt-transport-https',
+  'lsb-release',
+  'gnupg',
+  'curl',
+  'unzip',
+  'software-properties-common'
+]
