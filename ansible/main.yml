@@ -3,12 +3,8 @@
   become: true
 
   tasks:
-
-  - name: Install updates
-    include_role:
-      name: updates
   
-  - name: Install web server
+  - name: Install web server + php
     include_role:
       name: php
     when: ('web_servers' in group_names)

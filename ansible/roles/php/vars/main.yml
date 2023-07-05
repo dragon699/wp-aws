@@ -1,3 +1,13 @@
+requirements_pkgs: [
+  'ca-certificates',
+  'apt-transport-https',
+  'lsb-release',
+  'gnupg',
+  'curl',
+  'unzip',
+  'software-properties-common'
+]
+
 php_repo: ppa:ondrej/php
 php_pkgs: [
   'php8.2', 'php8.2-cli', 'php8.2-common',

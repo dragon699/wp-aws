@@ -1,3 +1,13 @@
+- name: 'upgrade packages'
+  apt:
+    update_cache: true
+    upgrade: true
+    autoclean: true
+
+- name: 'install requirement packages'
+  apt:
+    name: '{{ requirements_pkgs }}'
+
 - name: 'install repository'
   apt_repository:
     repo: '{{ php_repo }}'

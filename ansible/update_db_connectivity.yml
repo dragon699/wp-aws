@@ -1,0 +1,9 @@
+- name: 'Moving database server to a {{ subnet_state | default("private") }} subnet'
+  hosts: localhost
+  connection: localhost
+
+  tasks:
+
+  - name: "shut down ec2 instance"
+    ec2_instance:
+      
