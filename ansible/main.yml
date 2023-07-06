@@ -4,12 +4,12 @@
 
   tasks:
   
-  - name: Install web server + php
+  - name: Install apache2/php components
     include_role:
       name: php
     when: ('web_servers' in group_names)
 
-  - name: Install database
+  - name: Install database components
     include_role:
       name: mariadb
     when: ('db' in group_names)

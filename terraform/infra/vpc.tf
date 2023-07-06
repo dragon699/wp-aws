@@ -1,3 +1,5 @@
+data "aws_availability_zones" "zones" { state = "available" }
+
 resource "aws_vpc" "wp_vpc" {
   cidr_block = "10.0.0.0/16"
 
@@ -9,13 +11,15 @@ resource "aws_vpc" "wp_vpc" {
 
 resource "aws_subnet" "wp_subnets" {
   count = 2
+  map_public_ip_on_launch = true
+
   vpc_id = aws_vpc.wp_vpc.id
-  cidr_block = (count.index == 0) ? var.cidr_public_subnet : var.cidr_private_subnet
-  map_public_ip_on_launch = (count.index == 0) ? true : false
+  cidr_block = var.cidr_subnets[count.index]
+  availability_zone = data.aws_availability_zones.zones.names[count.index]
 
   tags = {
-    Name = "wp_${(count.index == 0) ? "public" : "private"}_subnet"
-    Description = "Wordpress ${(count.index == 0) ? "Web Servers" : "Database"} Subnet"
+    Name = "wp_public_subnet-${count.index}"
+    Description = "Wordpress Subnet #${count.index}"
   }
 }
 
@@ -38,11 +42,12 @@ resource "aws_route_table" "wp_public_rt" {
 
   tags = {
     Name = "wp_public_rt"
-    Description = "Wordpress cluster Public Route Table - for enabling internet traffic for all ECs in the public subnet"
+    Description = "Wordpress cluster Public Route Table - for enabling internet traffic for all ECs in the subnet"
   }
 }
 
 resource "aws_route_table_association" "wp_public_rt_route" {
-  subnet_id = aws_subnet.wp_subnets[0].id
+  count = 2
+  subnet_id = aws_subnet.wp_subnets[count.index].id
   route_table_id = aws_route_table.wp_public_rt.id
 }

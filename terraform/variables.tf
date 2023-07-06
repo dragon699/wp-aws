@@ -4,18 +4,30 @@ variable "region" {
   default     = "eu-west-2"
 }
 
-
-# Networking variables
-variable "cidr_public_subnet" {
-  type        = string
-  description = "The public CIDR that will be used for the web servers"
-  default     = "10.0.1.0/24"
+# Behavior variables
+variable "enable_db_internet_access" {
+  type        = bool
+  description = "Used to enable internet access for the database's security group. Upon completion of run.sh this will be false for the final infrastructure"
+  default     = false
 }
 
-variable "cidr_private_subnet" {
-  type        = string
-  description = "The private CIDR that will be used for the database server"
-  default     = "10.0.2.0/24"
+# Networking variables
+variable "cidr_subnets" {
+  type        = list(string)
+  description = "The public CIDRs that will be used for the 2 public subnets for web servers"
+  default     = ["10.0.1.0/24", "10.0.2.0/24"]
+}
+
+variable "port_web" {
+  type        = number
+  description = "The port to use for the web servers"
+  default     = 80
+}
+
+variable "port_db" {
+  type        = number
+  description = "The port to use for the database server"
+  default     = 3306
 }
 
 
