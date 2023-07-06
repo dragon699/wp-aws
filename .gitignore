@@ -1,0 +1,11 @@
+.last_build
+.terraform
+*.tfstate
+*.tfstate.backup
+terraform.loc*
+terraform/.terraform
+terraform/.terraform.lock.hcl
+terraform/*.tfstate
+terraform/*.tfstate.backup
+terraform/terraform.loc*
+venv
