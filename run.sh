@@ -9,10 +9,11 @@ source ${SCRIPT_DIR}/scripts/common.sh
 
 
 function run_deployment() {
+    create_venv
     create_build_dir
     install_requirements
-    create_venv
-
+    parse_vars
+    provision
     remove_venv
 }
 

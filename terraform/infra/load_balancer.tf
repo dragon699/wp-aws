@@ -1,5 +1,5 @@
 resource "aws_lb" "wp_web_lb" {
-    name = "wp-web-lb"
+    name = "wp-web-lb-${local.build_id}"
     internal = false
     load_balancer_type = "application"
     security_groups = [aws_security_group.wp_web_sg.id]
@@ -7,7 +7,7 @@ resource "aws_lb" "wp_web_lb" {
 }
 
 resource "aws_lb_target_group" "wp_web_lb_tg" {
-    name = "wp-web-lb-target-group"
+    name = "wp-web-lb-target-group-${local.build_id}"
     protocol = "HTTP"
     port = var.port_web
     vpc_id = aws_vpc.wp_vpc.id

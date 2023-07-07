@@ -1,6 +1,9 @@
 - name: 'Deploying Wordpress'
   hosts: all
   become: true
+  vars_files: vars.yml
+  vars:
+    ansible_user: ubuntu
 
   tasks:
   

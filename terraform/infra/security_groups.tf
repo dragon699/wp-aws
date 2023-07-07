@@ -1,5 +1,5 @@
 resource "aws_security_group" "wp_web_sg" {
-    name = "wp_web_sg"
+    name = "wp_web_sg-${local.build_id}"
     description = "Wordpress servers security group"
     vpc_id = aws_vpc.wp_vpc.id
 
@@ -26,7 +26,7 @@ resource "aws_security_group" "wp_web_sg" {
 }
 
 resource "aws_security_group" "wp_db_sg" {
-    name = "wp_db_sg"
+    name = "wp_db_sg-${local.build_id}"
     description = "Wordpress database server security group"
     vpc_id = aws_vpc.wp_vpc.id
 }

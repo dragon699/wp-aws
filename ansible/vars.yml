@@ -1,0 +1,6 @@
+# Default variables;
+# Values will be overwritten by extra vars;
+# when launched;
+hostname: localhost
+http_port: 80
+https_port: 443

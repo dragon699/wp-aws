@@ -6,14 +6,16 @@ variable "db_instance_type" {}
 variable "ubuntu_version" {}
 variable "ssh_key" {}
 variable "os_ami_owner" {}
+variable "port_ssh" {}
 variable "port_web" {}
 variable "port_db" {}
 variable "web_rules" {}
 
 locals {
+    build_id = basename(dirname(abspath("${path.root}")))
     web_rules = {
         ingress = [
-            [22, "0.0.0.0/0", "SSH enabled"],
+            [var.port_ssh, "0.0.0.0/0", "SSH enabled"],
             [var.port_web, "0.0.0.0/0", "Apache2 (HTTP) enabled"]
         ]
         egress = [

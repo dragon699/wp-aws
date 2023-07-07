@@ -21,7 +21,7 @@ resource "aws_vpc_security_group_ingress_rule" "enable_ssh_for_db" {
     security_group_id = aws_security_group.wp_db_sg.id
 
     ip_protocol = "tcp"
-    from_port = 22
-    to_port = 22
+    from_port = var.port_ssh
+    to_port = var.port_ssh
     cidr_ipv4 = "${data.http.ansible_host_ip[0].response_body}/32"
 }

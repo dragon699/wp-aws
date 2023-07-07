@@ -18,7 +18,7 @@
 
 - name: 'run db scripts'
   shell: 'mariadb < /tmp/{{ item }}'
-  loop: [
+  loop: [ 
     'secure_installation.sql',
     'create.sql'
   ]

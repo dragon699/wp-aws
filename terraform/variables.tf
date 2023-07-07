@@ -14,8 +14,14 @@ variable "enable_db_internet_access" {
 # Networking variables
 variable "cidr_subnets" {
   type        = list(string)
-  description = "The public CIDRs that will be used for the 2 public subnets for web servers"
+  description = "The public CIDRs that will be used for the 2 public subnets"
   default     = ["10.0.1.0/24", "10.0.2.0/24"]
+}
+
+variable "port_ssh" {
+  type        = number
+  description = "The port to use to ssh into the servers"
+  default     = 22
 }
 
 variable "port_web" {

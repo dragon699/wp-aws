@@ -1,0 +1,110 @@
+- name: region
+  description: AWS Region to deploy the cluster to; Env AWS_REGION could also be used instead
+  tags: ['terraform/region']
+  required: true
+  environment: 'AWS_REGION'
+
+- name: aws_access_key_id
+  description: AWS Access Key ID; export AWS_ACCESS_KEY_ID=<secret> could also be used instead
+  tags: ['terraform/aws_access_key_id']
+  required: true
+  environment: 'AWS_ACCESS_KEY_ID'
+
+- name: aws_secret_access_key
+  description: AWS Secret Access Key; export AWS_SECRET_ACCESS_KEY=<secret> could also be used instead
+  tags: ['terraform/aws_secret_access_key']
+  required: true
+  environment: 'AWS_SECRET_ACCESS_KEY'
+  
+- name: public_subnet_cidrs
+  type: list
+  default: ["10.0.1.0/24", "10.0.2.0/24"]
+  description: CIDR blocks for the public subnets
+  tags: ['terraform/cidr_subnets']
+
+- name: web_servers_count
+  type: int
+  default: 2
+  description: How many web servers to deploy behind the load balancer
+  tags: ['terraform/web_instance_count']
+
+- name: web_servers_type
+  default: t2.micro
+  description: EC2 type for the web servers
+  tags: ['terraform/web_instance_type']
+
+- name: db_server_type
+  default: t2.micro
+  description: EC2 type for the database server
+  tags: ['terraform/db_instance_type']
+
+- name: os_ami_owner
+  default: 099720109477
+  description: Ubuntu only - AMI owner ID to use for all servers
+  tags: ['terraform/os_ami_owner']
+
+- name: os_version
+  default: 22.04
+  description: Ubuntu only - OS version to use for all servers
+  tags: ['terraform/ubuntu_version']
+
+- name: ssh-key
+  default: create
+  description: |-
+    SSH key to use for all servers;
+    With "create" a new SSH-key will be generated for you;
+    Change "create" to your public key text in order to use your own key;
+    Env SSH_KEY could also be used instead
+  tags: ['terraform/ssh_key']
+  environment: 'SSH_KEY'
+
+- name: port_ssh
+  type: int
+  default: 22
+  description: SSH port to use for all servers
+  tags: ['terraform/port_ssh', 'ansible/ssh_port']
+
+- name: port_web
+  type: int
+  default: 80
+  description: HTTP port to use for the web servers
+  tags: ['terraform/port_web', 'ansible/http_port']
+
+- name: port_db
+  type: int
+  default: 3306
+  description: MariaDB port to use for the database server
+  tags: ['terraform/port_db', 'ansible/mariadb_port']
+
+- name: wp_db_user
+  default: wordpress
+  description: User to create for the Wordpress database; env WP_DB_USER could also be used instead
+  tags: ['ansible/wp_db_user']
+  required: true
+  environment: 'WP_DB_USER'
+
+- name: wp_db_passwd
+  description: Password to assign to the Wordpress database user; env WP_DB_PASSWD could also be used instead
+  tags: ['ansible/wp_db_passwd']
+  required: true
+  environment: 'WP_DB_PASSWD'
+
+- name: wp_db_name
+  default: wordpress
+  description: Database name for Wordpress; env WP_DB_NAME could also be used instead
+  tags: ['ansible/wp_db_name']
+  required: true
+  environment: 'WP_DB_NAME'
+
+- name: wp_admin_user
+  default: admin
+  description: Admin panel user for Wordpress; env WP_ADMIN_USER could also be used instead
+  tags: ['ansible/wp_admin_user']
+  required: true
+  environment: 'WP_ADMIN_USER'
+
+- name: wp_admin_passwd
+  description: Password to assign to the Wordpress admin panel user; env WP_ADMIN_PASSWD could also be used instead
+  tags: ['ansible/wp_admin_passwd']
+  required: true
+  environment: 'WP_ADMIN_PASSWD'

@@ -4,7 +4,7 @@ resource "aws_vpc" "wp_vpc" {
   cidr_block = "10.0.0.0/16"
 
   tags = {
-    Name = "wp_vpc"
+    Name = "wp_vpc-${local.build_id}"
     Description = "WordPress cluster VPC"
   }
 }
@@ -18,7 +18,7 @@ resource "aws_subnet" "wp_subnets" {
   availability_zone = data.aws_availability_zones.zones.names[count.index]
 
   tags = {
-    Name = "wp_public_subnet-${count.index}"
+    Name = "wp_public_subnet-${count.index}-${local.build_id}"
     Description = "Wordpress Subnet #${count.index}"
   }
 }
@@ -27,7 +27,7 @@ resource "aws_internet_gateway" "wp_igw" {
   vpc_id = aws_vpc.wp_vpc.id
 
   tags = {
-    Name = "wp_igw"
+    Name = "wp_igw-${local.build_id}"
     Description = "Wordpress cluster Internet Gateway"
   }
 }
@@ -41,7 +41,7 @@ resource "aws_route_table" "wp_public_rt" {
   }
 
   tags = {
-    Name = "wp_public_rt"
+    Name = "wp_public_rt-${local.build_id}"
     Description = "Wordpress cluster Public Route Table - for enabling internet traffic for all ECs in the subnet"
   }
 }

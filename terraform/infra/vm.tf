@@ -17,7 +17,7 @@ resource "tls_private_key" "new_ssh_key" {
 }
 
 resource "aws_key_pair" "ssh_key" {
-  key_name   = "wp-main-key"
+  key_name   = "wp-key-${local.build_id}" # extracts current build ID from the path name
   public_key = (var.ssh_key == "create") ? tls_private_key.new_ssh_key[0].public_key_openssh : var.ssh_key
 }
 
@@ -32,8 +32,9 @@ resource "aws_instance" "wp_web_instances" {
     vpc_security_group_ids = [aws_security_group.wp_web_sg.id]
 
     tags = {
-        Name = "WP-WEB-${count.index}"
-        description = "Wordpress (apache2 + php8) #${count.index}"
+        Name = "WP-WEB-${count.index}-${local.build_id}"
+        Description = "Wordpress (apache2 + php8) #${count.index}"
+        SSH_port = var.port_ssh
     }
 }
 
@@ -48,7 +49,7 @@ resource "aws_instance" "wp_db_instance" {
     
 
     tags = {
-        Name = "WP-DB-1"
-        description = "Wordpress (mariadb) #1"
+        Name = "WP-DB-1-${local.build_id}"
+        Description = "Wordpress (mariadb) #1"
     }
 }

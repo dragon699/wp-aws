@@ -19,6 +19,7 @@ module "infra" {
   ubuntu_version = var.ubuntu_version
   ssh_key = var.ssh_key
   os_ami_owner = var.os_ami_owner
+  port_ssh = var.port_ssh
   port_web = var.port_web
   port_db = var.port_db
   web_rules = {}
