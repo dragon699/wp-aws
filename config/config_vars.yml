@@ -67,20 +67,20 @@
 - name: port_ssh
   type: int
   default: 22
-  description: SSH port to use for all servers
+  description: SSH port to use and allow in security groups 
   tags: ['terraform/port_ssh', 'ansible/ssh_port']
 
 - name: port_web
   type: int
   default: 80
   description: HTTP port to use for the web servers
-  tags: ['terraform/port_web', 'ansible/http_port']
+  tags: ['terraform/port_web', 'ansible/port_web']
 
 - name: port_db
   type: int
   default: 3306
   description: MariaDB port to use for the database server
-  tags: ['terraform/port_db', 'ansible/mariadb_port']
+  tags: ['terraform/port_db', 'ansible/port_db']
 
 - name: wp_db_user
   default: wordpress
@@ -98,15 +98,6 @@
   tags: ['ansible/wp_db_passwd']
   required: true
   environment: 'WP_DB_PASSWD'
-
-- name: wp_db_name
-  default: wordpress
-  description: |-
-    Database name for Wordpress;
-    env WP_DB_NAME could also be used instead
-  tags: ['ansible/wp_db_name']
-  required: true
-  environment: 'WP_DB_NAME'
 
 - name: wp_admin_user
   default: admin

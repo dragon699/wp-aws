@@ -46,7 +46,7 @@ os_version: 22.04
 # Env SSH_KEY could also be used instead
 ssh-key: create
 
-# SSH port to use for all servers
+# SSH port to use and allow in security groups
 port_ssh: 22
 
 # HTTP port to use for the web servers
@@ -61,11 +61,7 @@ wp_db_user: wordpress
 
 # Password to assign to the Wordpress database user;
 # env WP_DB_PASSWD could also be used instead
-wp_db_passwd: admin
-
-# Database name for Wordpress;
-# env WP_DB_NAME could also be used instead
-wp_db_name: wordpress
+wp_db_passwd: 
 
 # Admin panel user for Wordpress;
 # env WP_ADMIN_USER could also be used instead
@@ -73,5 +69,5 @@ wp_admin_user: admin
 
 # Password to assign to the Wordpress admin panel user;
 # env WP_ADMIN_PASSWD could also be used instead
-wp_admin_passwd: admin
+wp_admin_passwd: 
 
