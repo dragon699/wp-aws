@@ -1,3 +1,8 @@
+scripts: [
+  'secure_installation.sql',
+  'create_users.sql'
+]
+
 mariadb_pkgs: [
   'mariadb-client',
   'mariadb-server',

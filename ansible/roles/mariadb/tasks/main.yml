@@ -7,10 +7,7 @@
   template:
     src: '{{ item }}'
     dest: '/tmp/{{ dest_item }}'
-  loop: [
-    'secure_installation.sql.j2',
-    'create.sql.j2'
-  ]
+  loop: '{{ scripts }}'
   loop_control:
     label: '{{ item }}'
   vars:
@@ -18,16 +15,10 @@
 
 - name: 'run db scripts'
   shell: 'mariadb < /tmp/{{ item }}'
-  loop: [ 
-    'secure_installation.sql',
-    'create.sql'
-  ]
+  loop: '{{ scripts }}'
 
 - name: 'remove db scripts'
   file:
     path: '/tmp/{{ item }}'
     state: absent
-  loop: [
-    'secure_installation.sql',
-    'create.sql'
-  ]
+  loop: '{{ scripts }}'
