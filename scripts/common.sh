@@ -29,10 +29,12 @@ function log() {
 # creates a terraform command args string
 function parse_vars() {
     log "Validating vars.yml.."
+    python3 ./scripts/parser.py parse_vars --hide-output
 
-    CMD_ARGS=$(python3 ./scripts/parser.py)
-    [[ $? != 0 ]] && log "${CMD_ARGS}" 1
-
+    [[ $? != 0 ]] && exit 1
+    
+    CMD_ARGS="$(python3 ./scripts/parser.py parse_vars)"
+    
     TERRAFORM_CMD_ARGS=$(echo ${CMD_ARGS} | jq -r '.terraform')
     ANSIBLE_CMD_ARGS=$(echo ${CMD_ARGS} | jq -r '.ansible')
     
@@ -120,8 +122,11 @@ function provision() {
 
     [[ $? != 0 ]] && log "Could not initialize terraform modules!" 1
 
+    # Deploy initially with -var enable_db_internet_access=true;
+    # which allows the database to be accessed from SSH and the internet;
+    # necessary during initial setup
     log "Creating ${BUILD_DIR}/terraform/tfplan.." 0
-    bash -c "terraform plan -out=tfplan -input=false -no-color ${TERRAFORM_CMD_ARGS}" > /dev/null
+    bash -c "terraform plan -out=tfplan -input=false -no-color ${TERRAFORM_CMD_ARGS} -var enable_db_internet_access=true" > /dev/null
 
     [[ $? != 0 ]] && log "Could not create terraform plan!" 1
 
@@ -142,16 +147,11 @@ function provision() {
     DNS_LOAD_BALANCER=$(terraform output -raw dns_load_balancer)
     ANSIBLE_CMD_ARGS="-i ../inventory.ini ${ANSIBLE_CMD_ARGS} -e hostname='${DNS_LOAD_BALANCER}' main.yml"
 
-    log "Installing required components.."
+    log "Running ansible.."
     cd ${BUILD_DIR}/ansible
+    log "Installing web server and database components.." 0
 
-    echo " ################################### "
-    echo " ################################### "
-    echo ${ANSIBLE_CMD_ARGS}
-    echo " ################################### "
-    echo " ################################### "
-
-    bash -c "ansible-playbook ${ANSIBLE_CMD_ARGS}"
+    bash -c "ansible-playbook -vv ${ANSIBLE_CMD_ARGS}"
     [[ $? != 0 ]] && log "Could not verify components installation in ansible!" 1
 
     log "Done!\n" 0

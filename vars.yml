@@ -2,7 +2,7 @@
 # and can be safely re-created anytime;
 # with python3 ./parser.py generate_docs;
 
-# To use this file, simply overwrite the variables you want;
+# To use this file, simply override the variables you want;
 # and run ./run.sh in the same directory;
 # Many of the variables could be used as env variables;
 # Refer to config/config_vars.yml for complete details for each var;
@@ -10,13 +10,16 @@
 # After completion, a new copy of the file will be generated;
 
 
-# AWS Region to deploy the cluster to; Env AWS_REGION could also be used instead
+# AWS Region to deploy the cluster to;
+# Env AWS_REGION could also be used instead
 region: 
 
-# AWS Access Key ID; export AWS_ACCESS_KEY_ID=<secret> could also be used instead
+# AWS Access Key ID from your AWS account;
+# export AWS_ACCESS_KEY_ID=<secret> could also be used instead
 aws_access_key_id: 
 
-# AWS Secret Access Key; export AWS_SECRET_ACCESS_KEY=<secret> could also be used instead
+# AWS Secret Access Key;
+# export AWS_SECRET_ACCESS_KEY=<secret> could also be used instead
 aws_secret_access_key: 
 
 # CIDR blocks for the public subnets
@@ -52,18 +55,23 @@ port_web: 80
 # MariaDB port to use for the database server
 port_db: 3306
 
-# User to create for the Wordpress database; env WP_DB_USER could also be used instead
+# User to create for the Wordpress database;
+# env WP_DB_USER could also be used instead
 wp_db_user: wordpress
 
-# Password to assign to the Wordpress database user; env WP_DB_PASSWD could also be used instead
+# Password to assign to the Wordpress database user;
+# env WP_DB_PASSWD could also be used instead
 wp_db_passwd: admin
 
-# Database name for Wordpress; env WP_DB_NAME could also be used instead
+# Database name for Wordpress;
+# env WP_DB_NAME could also be used instead
 wp_db_name: wordpress
 
-# Admin panel user for Wordpress; env WP_ADMIN_USER could also be used instead
+# Admin panel user for Wordpress;
+# env WP_ADMIN_USER could also be used instead
 wp_admin_user: admin
 
-# Password to assign to the Wordpress admin panel user; env WP_ADMIN_PASSWD could also be used instead
+# Password to assign to the Wordpress admin panel user;
+# env WP_ADMIN_PASSWD could also be used instead
 wp_admin_passwd: admin
 

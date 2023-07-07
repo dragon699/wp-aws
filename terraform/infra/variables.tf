@@ -24,7 +24,9 @@ locals {
     }
     db_rules = {
         ingress = [
-            [var.port_db, "${aws_instance.wp_db_instance.private_ip}/32", "MariaDB enabled"]
+            for instance in aws_instance.wp_web_instances: [
+                var.port_db, "${instance.private_ip}/32", "MariaDB enabled for ${instance.tags.Name}"
+            ]
         ]
         egress = []
     }

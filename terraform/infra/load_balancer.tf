@@ -18,3 +18,14 @@ resource "aws_lb_target_group_attachment" "attach_instances" {
     target_group_arn = aws_lb_target_group.wp_web_lb_tg.arn
     target_id = aws_instance.wp_web_instances[count.index].id
 }
+
+resource "aws_lb_listener" "wp_web_lb_listener" {
+  load_balancer_arn = aws_lb.wp_web_lb.arn
+  port              = var.port_web
+  protocol          = "HTTP"
+
+  default_action {
+    type             = "forward"
+    target_group_arn = aws_lb_target_group.wp_web_lb_tg.arn
+  }
+}

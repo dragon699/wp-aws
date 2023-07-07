@@ -54,7 +54,7 @@ class VarsGenerator:
             commented_description = ''.join(desc_lines)[:-1]
             var_item = '{}\n{}: '.format(commented_description, var['name'])
 
-            if ('default' in var) and (var['default']):
+            if 'default' in var:
                 var_item += '{}\n\n'.format(var['default'])
             
             else:
@@ -99,7 +99,7 @@ class VarsParser:
             var_value = None
             var_doc_data = get_dict_item(self.config_data, 'name', var)
 
-            if ('default' in var_doc_data) and (var_doc_data['default']):
+            if 'default' in var_doc_data:
                 var_value = var_doc_data['default']
 
             if ('environment' in var_doc_data) and (os.environ.get(var_doc_data['environment'])):
@@ -147,13 +147,16 @@ if __name__ == '__main__':
             parser = VarsParser()
 
         except:
-            log('Usage: python3 ./parser.py')
+            log('Usage: python3 ./parser.py parse_vars')
             log(' => Transforms parameters from the vars.yml file to terraform/ansible CLI args', True)
             log('Second-scenario Usage: python3 ./parser.py generate_docs', True)
             log(' => Updates README.md and generates the vars file, sourced from {}'.format(CONFIG_VARS_FILE), True)
             exit(1)
 
         parser.parse()
-        print(json.dumps(parser.params_out))
 
+        if (len(argv) > 2) and (argv[2] == '--hide-output'):
+            exit(0)
+
+        print(json.dumps(parser.params_out))
         exit(0)

@@ -49,7 +49,7 @@ resource "aws_instance" "wp_db_instance" {
     
 
     tags = {
-        Name = "WP-DB-1-${local.build_id}"
+        Name = "WP-DB-0-${local.build_id}"
         Description = "Wordpress (mariadb) #1"
     }
 }
