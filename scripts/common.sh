@@ -35,10 +35,13 @@ function parse_vars() {
     exit 1
     
     CMD_ARGS="$(python3 ./scripts/parser.py parse_vars)"
-    
-    TERRAFORM_CMD_ARGS=$(echo ${CMD_ARGS} | jq -r '.terraform')
-    ANSIBLE_CMD_ARGS=$(echo ${CMD_ARGS} | jq -r '.ansible')
-    
+   
+    SET_ENVS="$(echo ${CMD_ARGS} | jq -r '.env')"
+    TERRAFORM_CMD_ARGS="$(echo ${CMD_ARGS} | jq -r '.terraform')"
+    ANSIBLE_CMD_ARGS="$(echo ${CMD_ARGS} | jq -r '.ansible')"
+   
+    eval "${SET_ENVS}"
+
     [[ $TERRAFORM_CMD_ARGS =~ .*(ssh_key=\"?create\"?).* ]] && CREATE_SSH=true || CREATE_SSH=false
     log "OK, i have everything i need!\n" 0
 }
@@ -126,7 +129,6 @@ function provision() {
     # which allows the database to be accessed from SSH and the internet;
     # necessary during initial setup;
     # and is then disabled with enable_db_internet_access set to false;
-    echo ${TERRAFORM_CMD_ARGS}
     log "Creating ${BUILD_DIR}/terraform/tfplan.." 0
     bash -c "terraform plan -out=tfplan -input=false -no-color ${TERRAFORM_CMD_ARGS} -var enable_db_internet_access=true" > /dev/null
 
@@ -158,8 +160,7 @@ function provision() {
     cd ${BUILD_DIR}/ansible
     log "Installing web server and database components.." 0
 
-    echo $ANSIBLE_CMD
-    bash -c "ansible-playbook -v ${ANSIBLE_CMD}"
+    bash -c "ansible-playbook ${ANSIBLE_CMD}"
     #[[ $? != 0 ]] && log "Could not verify components installation in ansible!" 1
 
     log "Done!\n" 0

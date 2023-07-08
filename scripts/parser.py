@@ -1,5 +1,5 @@
 from sys import argv
-import os, yaml, json
+import os, yaml, json, subprocess
 
 
 ENV_ONLY_VARS = ['aws_access_key_id', 'aws_secret_access_key', 'region']
@@ -71,7 +71,7 @@ class VarsGenerator:
 class VarsParser:
     def __init__(self):
         self.script_dir = SCRIPT_ROOT_DIR
-        self.params_out = {'ansible': '', 'terraform': ''}
+        self.params_out = {'ansible': '', 'terraform': '', 'env': ''}
         self.prefixes = {'ansible': '-e', 'terraform': '-var'}
         self.read_vars_files()
 
@@ -121,8 +121,8 @@ class VarsParser:
                     continue
 
             else:
-                export_key = 'AWS_REGION' if (var == 'region') else var_doc_data['environment']
-                os.system('export {}="{}"'.format(export_key, var_value))
+                if 'environment' in var_doc_data:
+                    self.params_out['env'] += 'export {}="{}" '.format(var_doc_data['environment'], var_value)
 
                 if var in ENV_ONLY_VARS:
                     continue
