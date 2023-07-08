@@ -2,7 +2,7 @@ from sys import argv
 import os, yaml, json
 
 
-ENV_ONLY_VARS = ['aws_access_key_id', 'aws_secret_access_key']
+ENV_ONLY_VARS = ['aws_access_key_id', 'aws_secret_access_key', 'region']
 
 SCRIPT_ROOT_DIR = '{}/../'.format(os.path.dirname(os.path.realpath(__file__)))
 CONFIG_VARS_FILE = '{}/config/config_vars.yml'.format(SCRIPT_ROOT_DIR)
@@ -121,6 +121,9 @@ class VarsParser:
                     continue
 
             else:
+                export_key = 'AWS_REGION' if (var == 'region') else var_doc_data['environment']
+                os.system('export {}="{}"'.format(export_key, var_value))
+
                 if var in ENV_ONLY_VARS:
                     continue
 

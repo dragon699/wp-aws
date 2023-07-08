@@ -60,6 +60,7 @@ function create_venv() {
 
         sudo apt-get update > /dev/null
         sudo apt-get install jq python3-venv -y > /dev/null
+	sudo python3 -m pip install --upgrade pyyaml
 
         [[ $? != 0 ]] && \
         log "Installation failed; please, install python3-venv manually and try again" 1
@@ -76,13 +77,11 @@ function create_venv() {
 }
 
 function install_requirements() {
-    VENV_PKGS="ansible boto3 botocore pyyaml jinja2"
+    VENV_PKGS="ansible boto3 botocore jinja2"
 
     log "Verifying requirements.."
-    sudo python3 -m pip install --upgrade ${VENV_PKGS} > /dev/null
-
-    [[ $? != 0 ]] && sudo apt-get install python3-pip -y > /dev/null
-    [[ $? != 0 ]] && log "Could not install python3-pip!" 1
+    sudo python3 -m pip install --upgrade ${VENV_PKGS}
+    sudo apt-get install python3-pip
 
     terraform -v > /dev/null
 

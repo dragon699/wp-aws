@@ -4,7 +4,7 @@
     Env AWS_REGION could also be used instead
   tags: ['terraform/region']
   required: true
-  environment: 'AWS_REGION'
+  environment: AWS_REGION
 
 - name: aws_access_key_id
   description: |-
@@ -12,7 +12,7 @@
     export AWS_ACCESS_KEY_ID=<secret> could also be used instead
   tags: ['terraform/aws_access_key_id']
   required: true
-  environment: 'AWS_ACCESS_KEY_ID'
+  environment: AWS_ACCESS_KEY_ID
 
 - name: aws_secret_access_key
   description: |-
@@ -20,7 +20,7 @@
     export AWS_SECRET_ACCESS_KEY=<secret> could also be used instead
   tags: ['terraform/aws_secret_access_key']
   required: true
-  environment: 'AWS_SECRET_ACCESS_KEY'
+  environment: AWS_SECRET_ACCESS_KEY
   
 - name: public_subnet_cidrs
   type: list
@@ -62,7 +62,7 @@
     Change "create" to your public key text in order to use your own key;
     Env SSH_KEY could also be used instead
   tags: ['terraform/ssh_key']
-  environment: 'SSH_KEY'
+  environment: SSH_KEY
 
 - name: port_ssh
   type: int
@@ -89,7 +89,7 @@
     env WP_DB_USER could also be used instead
   tags: ['ansible/wp_db_user']
   required: true
-  environment: 'WP_DB_USER'
+  environment: WP_DB_USER
 
 - name: wp_db_passwd
   description: |-
@@ -97,7 +97,7 @@
     env WP_DB_PASSWD could also be used instead
   tags: ['ansible/wp_db_passwd']
   required: true
-  environment: 'WP_DB_PASSWD'
+  environment: WP_DB_PASSWD
 
 - name: wp_db_name
   default: wordpress
@@ -106,7 +106,7 @@
     env WP_DB_NAME could also be used instead
   tags: ['ansible/wp_db_name']
   required: true
-  environment: 'WP_DB_NAME'
+  environment: WP_DB_NAME
 
 - name: wp_web_title
   default: Tux the penguin
@@ -121,7 +121,7 @@
     env WP_ADMIN_EMAIL could also be used instead
   tags: ['ansible/wp_admin_email']
   required: true
-  environment: 'WP_ADMIN_EMAIL'
+  environment: WP_ADMIN_EMAIL
 
 - name: wp_admin_user
   default: admin
@@ -130,7 +130,7 @@
     env WP_ADMIN_USER could also be used instead
   tags: ['ansible/wp_admin_user']
   required: true
-  environment: 'WP_ADMIN_USER'
+  environment: WP_ADMIN_USER
 
 - name: wp_admin_passwd
   description: |-
@@ -138,4 +138,4 @@
     env WP_ADMIN_PASSWD could also be used instead
   tags: ['ansible/wp_admin_passwd']
   required: true
-  environment: 'WP_ADMIN_PASSWD'
+  environment: WP_ADMIN_PASSWD
