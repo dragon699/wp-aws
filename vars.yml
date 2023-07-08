@@ -12,15 +12,15 @@
 
 # AWS Region to deploy the cluster to;
 # Env AWS_REGION could also be used instead
-region:
+region: 
 
 # AWS Access Key ID from your AWS account;
 # export AWS_ACCESS_KEY_ID=<secret> could also be used instead
-aws_access_key_id: AKIAYF74FDPHKTBTJAIR
+aws_access_key_id: 
 
 # AWS Secret Access Key;
 # export AWS_SECRET_ACCESS_KEY=<secret> could also be used instead
-aws_secret_access_key: ulZDzFC4Quf2YXA8neJUXlh6OWAWmZRMwUakWEDr
+aws_secret_access_key: 
 
 # CIDR blocks for the public subnets
 public_subnet_cidrs: ['10.0.1.0/24', '10.0.2.0/24']
@@ -40,12 +40,11 @@ os_ami_owner: 099720109477
 # Ubuntu only - OS version to use for all servers
 os_version: 22.04
 
-# Public SSH key to put inside all servers;
+# SSH key to use for all servers;
 # With "create" a new SSH-key will be generated for you;
 # Change "create" to your public key text in order to use your own key;
-# If you decide to use yours, make sure to have it in /home/<your user>/.ssh/id_rsa.pub;
 # Env SSH_KEY could also be used instead
-ssh-key: ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDRYhNQwlG8pmiuU732X29Dd/n1guaDsaz9uKjczsO638a8+OeabLUrNkj9TAoDHWxM9x09MFaAUN9mn/kgRksHyN1CNjTy4E3rLekzORCJh72OndeoiOvxOj4RNIwiMts2YnOS6ICGZW2AhrKpxnIpC/jrgsTMUqnTNKyBdGPleRKbfpwMR2e4bOm6aJj6JzfcLNdnHVIW4S/qWXWq5FQItSzHlDtXt8Y7U690lkkqZ+tsbDW/rriB0wxShtZVQqne9NYjXdYxQMCRzlF2MoA/CZrHgj4Sw1Ei2LNJRjxsUHY3TEDRxixKsLWZlqzLqrvXMZqIKGoitqJvRZ7BvAsXAaL3GUwZjgzCmXO2JmLFXsJ/5+zVkQcsMGDnwcXRsBNnTRqXVbOegisBSS2O2cVJj5oqrL28lzwcZh/NnkGkmIsMqCqjmK88QKo8j7XGeklHHwDT94+qtca0+nEIHv/Nvh3+dnAVXifSn9zZRAKWnbcJW8xVzMVX7+qhV4VMdZ8= skull@Skull-Desktop
+ssh-key: create
 
 # SSH port to use and allow in security groups
 port_ssh: 22
@@ -62,7 +61,7 @@ wp_db_user: wordpress
 
 # Password to assign to the Wordpress database user;
 # env WP_DB_PASSWD could also be used instead
-wp_db_passwd: wp
+wp_db_passwd: 
 
 # Database name for Wordpress;
 # env WP_DB_NAME could also be used instead
@@ -74,7 +73,7 @@ wp_web_title: Tux the penguin
 
 # Email to assign to the Wordpress admin panel user;
 # env WP_ADMIN_EMAIL could also be used instead
-wp_admin_email: test@test.com
+wp_admin_email: 
 
 # Admin panel user for Wordpress;
 # env WP_ADMIN_USER could also be used instead
@@ -82,4 +81,5 @@ wp_admin_user: admin
 
 # Password to assign to the Wordpress admin panel user;
 # env WP_ADMIN_PASSWD could also be used instead
-wp_admin_passwd: wp
+wp_admin_passwd: 
+

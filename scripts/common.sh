@@ -58,8 +58,8 @@ function create_venv() {
     if [[ $? != 0 ]]; then
         log "Installing python3-venv.." 0
 
-        sudo apt-get update > /dev/null
-        sudo apt-get install python3-venv -y > /dev/null
+        sudo apt-get update &> /dev/null
+        sudo apt-get install python3-venv -y &> /dev/null
 
         [[ $? != 0 ]] && \
         log "Installation failed; please, install python3-venv manually and try again" 1
@@ -70,7 +70,7 @@ function create_venv() {
 
     log "Creating virtual environment.."
     python3 -m venv venv && source ./venv/bin/activate
-    python3 -m pip install --upgrade pyyaml
+    python3 -m pip install --upgrade pyyaml &> /dev/null
 
     [[ $? != 0 ]] && log "Could not create a python3 virtual environment!" 1
     VENV=true
@@ -80,7 +80,7 @@ function install_requirements() {
     VENV_PKGS="ansible boto3 botocore jinja2"
 
     log "Verifying requirements.."
-    python3 -m pip install --upgrade ${VENV_PKGS}
+    python3 -m pip install --upgrade ${VENV_PKGS} &> /dev/null
 
     terraform -v > /dev/null
 
@@ -90,8 +90,8 @@ function install_requirements() {
         sudo rm -Rf ${TERRAFORM_GPG}
         wget -O- https://apt.releases.hashicorp.com/gpg | sudo gpg --dearmor -o "$TERRAFORM_GPG"
         echo "deb [signed-by=${TERRAFORM_GPG}] https://apt.releases.hashicorp.com $(lsb_release -cs) main" | sudo tee ${TERRAFORM_REPO_LIST}
-        sudo apt-get update > /dev/null
-        sudo apt install jq terraform -y > /dev/null
+        sudo apt-get update &> /dev/null
+        sudo apt install jq terraform -y &> /dev/null
 
         [[ $? != 0 ]] && \
         log "Installation failed; please, install terraform manually and try again" 1

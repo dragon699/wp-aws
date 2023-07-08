@@ -1,4 +1,3 @@
-.last_build
 .terraform
 *.tfstate
 *.tfstate.backup
