@@ -24,12 +24,12 @@ wordpress_install_commands: [
 ]
 
 wordpress_permissions: [
-  {dir: 'wp-admin', mode: 0755},
-  {dir: 'wp-includes', mode: 0755},
-  {dir: 'wp-content', mode: 0755},
-  {dir: 'wp-content/themes', mode: 0755},
-  {dir: 'wp-content/plugins', mode: 0755},
-  {dir: 'wp-content/uploads', mode: 0755},
-  {dir: 'index.php', mode: 0644},
-  {dir: 'wp-config.php', mode: 0640}
+  {dir: 'wp-admin', mode: '0755'},
+  {dir: 'wp-includes', mode: '0755'},
+  {dir: 'wp-content', mode: '0755'},
+  {dir: 'wp-content/themes', mode: '0755'},
+  {dir: 'wp-content/plugins', mode: '0755'},
+  {dir: 'wp-content/uploads', mode: '0755'},
+  {dir: 'index.php', mode: '0644'},
+  {dir: 'wp-config.php', mode: '0640'}
 ]
