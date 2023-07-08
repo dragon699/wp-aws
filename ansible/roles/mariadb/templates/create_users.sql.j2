@@ -1,11 +1,6 @@
-CREATE DATABASE wpdb;
-CREATE USER  'wp'@'172.31.0.0/255.255.255.0' IDENTIFIED BY '123';
-GRANT ALL ON wpdb.* to 'wp'@'172.31.0.0/255.255.255.0' IDENTIFIED BY '123' WITH GRANT OPTION;
-
-FLUSH PRIVILEGES;
-
-
-CREATE USER  'wp'@'10.0.1.236' IDENTIFIED BY 'wp';
-GRANT ALL ON wpdb.* to 'wp'@'10.0.1.236' IDENTIFIED BY 'wp' WITH GRANT OPTION;
+{% for wp_host in web_instances_addresses %}
+CREATE USER '{{ wp_db_user }}'@'{{ address }}' IDENTIFIED BY '{{ wp_db_passwd }}';
+GRANT ALL ON {{ wp_db_name }}.* to '{{ wp_db_user }}'@'{{ wp_host }}' IDENTIFIED BY '{{ wp_db_passwd }}' WITH GRANT OPTION;
+{% endfor %}
 
 FLUSH PRIVILEGES;

@@ -1,0 +1,5 @@
+- name: 'restart webserver services'
+  systemd:
+    name: '{{ apache2_service | default("apache2") }}'
+    state: restarted
+    daemon_reload: true

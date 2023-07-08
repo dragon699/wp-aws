@@ -99,6 +99,30 @@
   required: true
   environment: 'WP_DB_PASSWD'
 
+- name: wp_db_name
+  default: wordpress
+  description: |-
+    Database name for Wordpress;
+    env WP_DB_NAME could also be used instead
+  tags: ['ansible/wp_db_name']
+  required: true
+  environment: 'WP_DB_NAME'
+
+- name: wp_web_title
+  default: Tux the penguin
+  description: |-
+    Title to assign to the Wordpress site template;
+    Will appear on top of home page
+  tags: ['ansible/wp_web_title']
+
+- name: wp_admin_email
+  description: |-
+    Email to assign to the Wordpress admin panel user;
+    env WP_ADMIN_EMAIL could also be used instead
+  tags: ['ansible/wp_admin_email']
+  required: true
+  environment: 'WP_ADMIN_EMAIL'
+
 - name: wp_admin_user
   default: admin
   description: |-

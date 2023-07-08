@@ -15,9 +15,9 @@ function log() {
         echo -e "   $1"
     
     elif [[ $2 == 1 ]]; then
-        echo -e " ! Error => $1"
+        echo -e " ! $1"
 
-        [[ $VENV == true ]] && remove_venv
+        [[ $VENV == true ]] && remove_venv rm_build_dir
         exit 1
     
     else
@@ -30,15 +30,16 @@ function log() {
 function parse_vars() {
     log "Validating vars.yml.."
     python3 ./scripts/parser.py parse_vars --hide-output
-
-    [[ $? != 0 ]] && exit 1
+    
+    [[ $? != 0 ]] && remove_venv rm_build_dir && \
+    exit 1
     
     CMD_ARGS="$(python3 ./scripts/parser.py parse_vars)"
     
     TERRAFORM_CMD_ARGS=$(echo ${CMD_ARGS} | jq -r '.terraform')
     ANSIBLE_CMD_ARGS=$(echo ${CMD_ARGS} | jq -r '.ansible')
     
-    [[ $TERRAFORM_CMD_ARGS =~ .*(ssh_key=\"?create\"?).* ]] && CREATE_SSH=true
+    [[ $TERRAFORM_CMD_ARGS =~ .*(ssh_key=\"?create\"?).* ]] && CREATE_SSH=true || CREATE_SSH=false
     log "OK, i have everything i need!\n" 0
 }
 
@@ -99,7 +100,7 @@ function install_requirements() {
     fi
 }
 
-function get_new_ssh_from_terraform() {
+function create_ssh_file() {
     NEW_SSH_KEY="$(terraform output -json private_key | jq -r '.[0].private_key_openssh')"
     
     echo "$NEW_SSH_KEY" > ${BUILD_DIR}/wp-aws-ssh-private
@@ -111,11 +112,12 @@ function remove_venv() {
     deactivate && rm -Rf ${BUILD_DIR}/venv
     
     VENV=false
+    [[ "$1" == rm_build_dir ]] && rm -Rf ${BUILD_DIR}
 }
 
 function provision() {
     cd ${BUILD_DIR}/terraform
-    log "Provisioning Infrastructure.."
+    log "Provisioning infrastructure.."
 
     log "Initializing terraform modules.." 0
     terraform init -input=false -no-color > /dev/null
@@ -124,7 +126,9 @@ function provision() {
 
     # Deploy initially with -var enable_db_internet_access=true;
     # which allows the database to be accessed from SSH and the internet;
-    # necessary during initial setup
+    # necessary during initial setup;
+    # and is then disabled with enable_db_internet_access set to false;
+    echo ${TERRAFORM_CMD_ARGS}
     log "Creating ${BUILD_DIR}/terraform/tfplan.." 0
     bash -c "terraform plan -out=tfplan -input=false -no-color ${TERRAFORM_CMD_ARGS} -var enable_db_internet_access=true" > /dev/null
 
@@ -136,23 +140,29 @@ function provision() {
     bash -c 'terraform apply -input=false -no-color -auto-approve tfplan'
     [[ $? != 0 ]] && log "Could not create AWS infrastructure!" 1
 
-    [[ ${CREATE_SSH} == true ]] && get_new_ssh_from_terraform
+    [[ ${CREATE_SSH} == true ]] && create_ssh_file
     log "Done!\n" 0
     
-    log "Creating ansible inventory.."
-    python3 ${BUILD_DIR}/scripts/create_inventory.py true
+    log "Creating ansible inventory.." 0
+    python3 ${BUILD_DIR}/scripts/create_inventory.py ${CREATE_SSH}
 
     [[ $? != 0 ]] && log "Could not create ansible inventory!" 1
 
+    log "Running playbook on AWS infrastructure.." 0
+    
     DNS_LOAD_BALANCER=$(terraform output -raw dns_load_balancer)
-    ANSIBLE_CMD_ARGS="-i ../inventory.ini ${ANSIBLE_CMD_ARGS} -e hostname='${DNS_LOAD_BALANCER}' main.yml"
+    WEB_PRIVATE_IPS=$(terraform output -json web_instances | jq -r '.[].private_ip')
+    DB_PRIVATE_IP=$(terraform output -json db_instance | jq -r '.private_ip')
 
-    log "Running ansible.."
+    ANSIBLE_CMD_EXTRA_ARGS="-e hostname='${DNS_LOAD_BALANCER}' -e web_addresses='${WEB_PRIVATE_IPS}' -e db_address='${DB_PRIVATE_IP}'"
+    ANSIBLE_CMD="-i ../inventory.ini ${ANSIBLE_CMD_ARGS} ${ANSIBLE_CMD_EXTRA_ARGS} main.yml"
+
     cd ${BUILD_DIR}/ansible
     log "Installing web server and database components.." 0
 
-    bash -c "ansible-playbook -vv ${ANSIBLE_CMD_ARGS}"
-    [[ $? != 0 ]] && log "Could not verify components installation in ansible!" 1
+    echo $ANSIBLE_CMD
+    bash -c "ansible-playbook -v ${ANSIBLE_CMD}"
+    #[[ $? != 0 ]] && log "Could not verify components installation in ansible!" 1
 
     log "Done!\n" 0
 }

@@ -1,6 +1,9 @@
+mariadb_config: /etc/mysql/mariadb.conf.d/50-server.cnf
+mariadb_service: mariadb
+
 scripts: [
-  'secure_installation.sql',
-  'create_users.sql'
+  'secure_installation.sql.j2',
+  'create_users.sql.j2'
 ]
 
 mariadb_pkgs: [

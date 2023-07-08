@@ -1,2 +1,33 @@
----
-# tasks file for wordpress
+- name: 'ensure correct {{ web_dir }} ownership'
+  file:
+    path: '{{ web_dir }}'
+    state: directory
+    owner: ubuntu
+    group: ubuntu
+    recurse: yes
+
+- name: 'install wp-cli'
+  get_url:
+    url: "{{ wpcli_url }}"
+    dest: "{{ wpcli_install_dir }}/wp"
+    group: ubuntu
+    owner: ubuntu
+    mode: +x
+
+- name: 'install wordpress'
+  shell: 'wp {{ item.cmd_arg }}'
+  become: false
+  loop: '{{ wordpress_install_commands }}'
+  loop_control:
+    label: '{{ item.name }}'
+  args:
+    chdir: '{{ web_dir }}'
+
+- name: 'ensure correct {{ web_dir }} permissions'
+  file:
+    state: directory
+    path: '{{ web_dir }}/{{ item.dir }}'
+    mode: '{{ item.mode }}'
+  loop: '{{ wordpress_permissions }}'
+  loop_control:
+    label: '{{ item.dir }}'

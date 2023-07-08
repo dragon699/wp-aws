@@ -17,5 +17,6 @@ php_pkgs: [
   'php8.2-zip', 'php8.2-bz2', 'libapache2-mod-php8.2'
 ]
 
+apache2_service: apache2
 apache2_pkg: apache2
 mariadb_pkg: mariadb-client

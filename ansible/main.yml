@@ -5,8 +5,8 @@
   vars:
     ansible_user: ubuntu
 
+
   tasks:
-  
   - name: Install apache2/php components
     include_role:
       name: php
@@ -16,3 +16,11 @@
     include_role:
       name: mariadb
     when: ('db' in group_names)
+
+  - name: check if vm restarts are necessary..
+    meta: flush_handlers
+
+  - name: Install wordpress components
+    include_role:
+      name: wordpress
+    when: ('web_servers' in group_names)

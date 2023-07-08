@@ -110,7 +110,7 @@ class VarsParser:
 
             if not var_value:
                 if ('required' in var_doc_data) and (var_doc_data['required']):
-                    log('{}: required variable not provided!'.format(var))
+                    log('{}: required variable not provided!'.format(var), True)
                     log('Please, make sure to provide below variable in your vars.yml file:\n', True)
                     
                     print(json.dumps(var_doc_data, indent=4))

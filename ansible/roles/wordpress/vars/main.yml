@@ -1,2 +1,35 @@
----
-# vars file for wordpress
+wpcli_url: https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar
+wpcli_install_dir: /usr/local/bin
+
+# Wordpress credentials and values are directly fetched;
+# from extra vars and are all available inside;
+# the <project_root>/config/config_vars.yml file;
+wordpress_install_commands: [
+  {
+    name: 'download wordpress',
+    cmd_arg: "core download"
+  },
+  {
+    name: 'create wordpress config',
+    cmd_arg: "config create --dbname={{ wp_db_name }} --dbuser={{ wp_db_user }} --dbpass={{ wp_db_passwd }} --dbhost={{ db_instance_address }} --dbprefix=_blog"
+  },
+  {
+    name: 'create wordpress database',
+    cmd_arg: 'db create'
+  },
+  {
+    name: 'install wordpress',
+    cmd_arg: "core install --url={{ web_hostname }} --title={{ wp_web_title }} --admin_user={{ wp_admin_user }} --admin_password={{ wp_admin_passwd }} --admin_email={{ wp_admin_email }}"
+  }
+]
+
+wordpress_permissions: [
+  {dir: 'wp-admin', mode: 0755},
+  {dir: 'wp-includes', mode: 0755},
+  {dir: 'wp-content', mode: 0755},
+  {dir: 'wp-content/themes', mode: 0755},
+  {dir: 'wp-content/plugins', mode: 0755},
+  {dir: 'wp-content/uploads', mode: 0755},
+  {dir: 'index.php', mode: 0644},
+  {dir: 'wp-config.php', mode: 0640}
+]

@@ -1,6 +1,11 @@
 # Default variables;
 # Values will be overwritten by extra vars;
 # when launched;
-hostname: localhost
-http_port: 80
-https_port: 443
+web_hostname: '{{ hostname }} '
+web_port: '{{ port_web }}'
+db_port: '{{ port_db }}'
+
+web_instances_addresses: "{{ web_addresses.split() }}"
+db_instance_address: "{{ db_address }}"
+
+web_dir: "/var/www/html"

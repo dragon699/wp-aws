@@ -1,0 +1,5 @@
+- name: 'restart db services'
+  systemd:
+    name: '{{ db_service | default("mariadb") }}'
+    state: restarted
+    daemon_reload: true

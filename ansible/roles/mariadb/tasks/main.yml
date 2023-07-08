@@ -3,22 +3,36 @@
     update_cache: true
     name: '{{ mariadb_pkgs }}'
 
-- name: 'render db scripts'
-  template:
-    src: '{{ item }}'
-    dest: '/tmp/{{ dest_item }}'
-  loop: '{{ scripts }}'
-  loop_control:
-    label: '{{ item }}'
+- block:
+  - name: 'render db scripts'
+    template:
+      src: '{{ item }}'
+      dest: '/tmp/{{ dest_item }}'
+    loop: '{{ scripts }}'
+    loop_control:
+      label: '{{ item }}'
+
+  - name: 'run db scripts'
+    shell: 'mariadb < /tmp/{{ dest_item }}'
+    ignore_errors: true
+    loop: '{{ scripts }}'
+    loop_control:
+      label: '{{ dest_item }}'
+
+  - name: 'remove db scripts'
+    file:
+      path: '/tmp/{{ dest_item }}'
+      state: absent
+    loop: '{{ scripts }}'
+    loop_control:
+      label: '{{ dest_item }}'
   vars:
     dest_item: '{{ item.split(".")[:-1] | join(".") }}'
 
-- name: 'run db scripts'
-  shell: 'mariadb < /tmp/{{ item }}'
-  loop: '{{ scripts }}'
-
-- name: 'remove db scripts'
-  file:
-    path: '/tmp/{{ item }}'
-    state: absent
-  loop: '{{ scripts }}'
+- name: 'enable db remote connections'
+  lineinfile:
+    path: '{{ mariadb_config }}'
+    backup: true
+    regex: '(^( ?)+bind-address.*=.*)'
+    line: 'bind-address = 0.0.0.0'
+  notify: 'restart db services'
