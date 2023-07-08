@@ -12,7 +12,7 @@
 
 # AWS Region to deploy the cluster to;
 # Env AWS_REGION could also be used instead
-region: eu-west-2
+region:
 
 # AWS Access Key ID from your AWS account;
 # export AWS_ACCESS_KEY_ID=<secret> could also be used instead

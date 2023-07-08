@@ -79,10 +79,10 @@ function install_requirements() {
     VENV_PKGS="ansible boto3 botocore pyyaml jinja2"
 
     log "Verifying requirements.."
-    python3 -m pip install ${VENV_PKGS} > /dev/null
+    sudo python3 -m pip install --upgrade ${VENV_PKGS} > /dev/null
 
-    [[ $? != 0 ]] && \
-    log "Seems like something is wrong with pip3; please, reinstall it manually and try again" 1
+    [[ $? != 0 ]] && sudo apt-get install python3-pip -y > /dev/null
+    [[ $? != 0 ]] && log "Could not install python3-pip!" 1
 
     terraform -v > /dev/null
 
