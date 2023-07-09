@@ -94,7 +94,7 @@ class VarsGenerator:
 
             docs_data += [
                 '| {} | {} | {} | {} | {} |'.format(
-                    '**{}**'.format(var['name']),
+                    var['name'],
                     var['description'].replace('\n', '<br />'),
                     var['default'] if 'default' in var else '-',
                     var['environment'] if 'environment' in var else "_can't be used as ENV variable_",
