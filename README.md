@@ -3,7 +3,7 @@
 #### Create your Wordpress cluster in just a few minutes
 
 ### Usage:
-Clone this project, edit desired values in vars.yml, then
+~~Clone~~ this project, edit desired values in vars.yml, then
 ```
 $ ./run.sh
 ```
