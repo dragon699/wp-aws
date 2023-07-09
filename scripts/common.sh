@@ -84,7 +84,7 @@ function create_venv() {
     REQUIRED_MODULES=(venv pip)
 
     for MD in ${REQUIRED_MODULES[@]}; do
-        ${PYTHON_BIN} -c "import $1" &> /dev/null
+        ${PYTHON_BIN} -c "import $MD" &> /dev/null
         
         [[ $? != 0 ]] && install_module ${MD}
     done
