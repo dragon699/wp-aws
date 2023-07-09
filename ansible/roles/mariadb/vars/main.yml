@@ -3,7 +3,7 @@ mariadb_service: mariadb
 
 scripts: [
   'secure_installation.sql.j2',
-  'create_users.sql.j2'
+  'create.sql.j2'
 ]
 
 mariadb_pkgs: [

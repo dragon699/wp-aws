@@ -46,13 +46,42 @@ function parse_vars() {
     log "OK, i have everything i need!\n" 0
 }
 
+function destruct() {
+    VERIFY_VARS=(AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY AWS_REGION)
+
+    for VAR in ${VERIFY_VARS[@]}; do
+        if [[ -z ${!VAR} ]]; then
+            log "${VAR}: environment variable missing - it needs to be set in order to destroy the infrastructure" && exit
+        fi
+    done
+
+    cd ./terraform
+    terraform destroy -auto-approve
+
+    [[ $? != 0 ]] && log "Destruction failed! Leftovers might be still available, please verify manually" && exit
+
+    log "Removing ${BUILD_DIR}.."
+    cd ${HOME}
+    rm -Rf ${BUILD_DIR}
+
+    log "Done!\n" 0
+}
+
 function create_build_dir() {
     log "Creating ${BUILD_DIR}.."
     mkdir -p ${BUILD_DIR}
     cd ${BUILD_DIR}
     
     cp -R ${SCRIPT_DIR}/* .
-    rm -Rf ./.gitignore
+    rm -Rf ./.gitignore ./run.sh
+
+    DESTRUCT_FILE="${BUILD_DIR}/destroy.sh"
+
+    echo "#!/bin/bash" > ${DESTRUCT_FILE}
+    echo "source ${BUILD_DIR}/scripts/common.sh" >> ${DESTRUCT_FILE}
+    echo "cd ${BUILD_DIR} && destruct" >> ${DESTRUCT_FILE}
+
+    chmod +x ${DESTRUCT_FILE}
 }
 
 function create_venv() {
@@ -66,7 +95,8 @@ function create_venv() {
 
         [[ $? != 0 ]] && \
         log "Installation failed; please, install python3-venv manually and try again" 1
-    
+        
+        rm -Rf venv
     else
         deactivate > /dev/null 2>&1
     fi
@@ -110,13 +140,15 @@ function create_ssh_file() {
 
 function remove_venv() {
     log "Destroying virtual environment.."
-    deactivate && rm -Rf ${BUILD_DIR}/venv
+    deactivate
     
     VENV=false
     [[ "$1" == rm_build_dir ]] && rm -Rf ${BUILD_DIR}
 }
 
 function provision() {
+    TERRAFORM_PLAN_CMD="terraform plan -out=tfplan -input=false -no-color ${TERRAFORM_CMD_ARGS}"
+
     cd ${BUILD_DIR}/terraform
     log "Provisioning infrastructure.."
 
@@ -129,13 +161,12 @@ function provision() {
     # which allows the database to be accessed from SSH and the internet;
     # necessary during initial setup;
     # and is then disabled with enable_db_internet_access set to false;
+    echo ${TERRAFORM_CMD_ARGS}
     log "Creating ${BUILD_DIR}/terraform/tfplan.." 0
-    bash -c "terraform plan -out=tfplan -input=false -no-color ${TERRAFORM_CMD_ARGS} -var enable_db_internet_access=true" > /dev/null
-
+    bash -c "${TERRAFORM_PLAN_CMD} -var enable_db_internet_access=true" > /dev/null
     [[ $? != 0 ]] && log "Could not create terraform plan!" 1
 
     log "Creating AWS infrastructure..\n" 0
-    sleep 2
 
     bash -c 'terraform apply -input=false -no-color -auto-approve tfplan'
     [[ $? != 0 ]] && log "Could not create AWS infrastructure!" 1
@@ -154,14 +185,33 @@ function provision() {
     WEB_PRIVATE_IPS=$(terraform output -json web_instances | jq -r '.[].private_ip')
     DB_PRIVATE_IP=$(terraform output -json db_instance | jq -r '.private_ip')
 
-    ANSIBLE_CMD_EXTRA_ARGS="-e hostname='${DNS_LOAD_BALANCER}' -e web_addresses='${WEB_PRIVATE_IPS}' -e db_address='${DB_PRIVATE_IP}'"
-    ANSIBLE_CMD="-i ../inventory.ini ${ANSIBLE_CMD_ARGS} ${ANSIBLE_CMD_EXTRA_ARGS} main.yml"
+    ANSIBLE_CMD_ARGS="-i ../inventory.ini ${ANSIBLE_CMD_ARGS} -e 'hostname=\"${DNS_LOAD_BALANCER}\"' -e 'web_addresses=\"${WEB_PRIVATE_IPS}\"' -e 'db_address=\"${DB_PRIVATE_IP}\"' main.yml"
 
     cd ${BUILD_DIR}/ansible
     log "Installing web server and database components.." 0
 
-    bash -c "ansible-playbook ${ANSIBLE_CMD}"
-    #[[ $? != 0 ]] && log "Could not verify components installation in ansible!" 1
+    VENV=false
+    echo ${ANSIBLE_CMD_ARGS}
 
+    bash -c "ansible-playbook ${ANSIBLE_CMD_ARGS}"
+    [[ $? != 0 ]] && log "Could not verify components installation in ansible!" 1
     log "Done!\n" 0
+
+    cd ${BUILD_DIR}/terraform
+    log "Updating AWS infrastructure..\n"
+    log "Disabling network access for MariaDB..\n" 0
+
+    bash -c "${TERRAFORM_PLAN_CMD} -var enable_db_internet_access=false" > /dev/null
+    [[ $? != 0 ]] && log "Could not create terraform plan for disabling the access!" 1
+
+    bash -c 'terraform apply -input=false -no-color -auto-approve tfplan'
+    [[ $? != 0 ]] && log "Could not disable the access properly!" 1
+    
+    log "Done!\n" 0
+}
+
+function show_outputs() {
+    log "Fetching variables..\n"
+
+    log "" 0
 }

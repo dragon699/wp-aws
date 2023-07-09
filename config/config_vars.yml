@@ -109,7 +109,7 @@
   environment: WP_DB_NAME
 
 - name: wp_web_title
-  default: Tux the penguin
+  default: "Tux the penguin"
   description: |-
     Title to assign to the Wordpress site template;
     Will appear on top of home page

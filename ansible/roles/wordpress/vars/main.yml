@@ -1,3 +1,12 @@
+node_index: '{{ inventory_hostname.split("-")[-2] }}'
+
+wp_home_page_title: Linux Namespaces
+wp_home_template_path: '{{ web_dir }}/wp-content/themes/twentytwentythree/templates/home.html'
+
+wp_blog_file: linux_namespaces.txt
+wp_blog_title: '{{ wp_blog_file.split("_")[:-1] | join(" ") | title }}'
+wp_blog_text: '{{ lookup("file", (playbook_dir + "/../content/" + wp_blog_file)) }}'
+
 wpcli_url: https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar
 wpcli_install_dir: /usr/local/bin
 
@@ -10,16 +19,23 @@ wordpress_install_commands: [
     cmd_arg: "core download"
   },
   {
-    name: 'create wordpress config',
-    cmd_arg: "config create --dbname={{ wp_db_name }} --dbuser={{ wp_db_user }} --dbpass={{ wp_db_passwd }} --dbhost={{ db_instance_address }} --dbprefix=_blog"
-  },
-  {
-    name: 'create wordpress database',
-    cmd_arg: 'db create'
+    name: 'create wp-config.php',
+    cmd_arg: "config create --dbname={{ wp_db_name }} --dbuser={{ wp_db_user }}-{{ node_index }} --dbpass={{ wp_db_passwd }} --dbhost={{ db_instance_address }} --dbprefix=tux{{ node_index }}_"
   },
   {
     name: 'install wordpress',
-    cmd_arg: "core install --url={{ web_hostname }} --title={{ wp_web_title }} --admin_user={{ wp_admin_user }} --admin_password={{ wp_admin_passwd }} --admin_email={{ wp_admin_email }}"
+    cmd_arg: "core multisite-install --url={{ web_hostname }} --title='{{ wp_web_title }}' --admin_user={{ wp_admin_user }} --admin_password={{ wp_admin_passwd }} --admin_email={{ wp_admin_email }}"
+  }
+]
+
+wordpress_blog: [
+  {
+    name: 'delete default blog',
+    cmd_arg: "post delete 1"
+  },
+  {
+    name: 'create blog',
+    cmd_arg: "post create --post_type=post --post_title='{{ wp_blog_title }}' --post_content='{{ wp_blog_text }}' --post_status=publish"
   }
 ]
 
@@ -30,6 +46,6 @@ wordpress_permissions: [
   {dir: 'wp-content/themes', mode: '0755'},
   {dir: 'wp-content/plugins', mode: '0755'},
   {dir: 'wp-content/uploads', mode: '0755'},
-  {dir: 'index.php', mode: '0644'},
-  {dir: 'wp-config.php', mode: '0640'}
+  {dir: 'index.php', mode: '0644', type: 'file'},
+  {dir: 'wp-config.php', mode: '0640', type: 'file'}
 ]

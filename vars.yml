@@ -16,12 +16,14 @@ region: eu-west-2
 
 # AWS Access Key ID from your AWS account;
 # export AWS_ACCESS_KEY_ID=<secret> could also be used instead
+aws_secret_access_key: Gasdr2fHYhKJ52wsjz4SIoQFe3s2BDGpST4LXvzC
+aws_access_key_id: AKIA4KR6WSLIQU4BYH43
 
 # AWS Secret Access Key;
 # export AWS_SECRET_ACCESS_KEY=<secret> could also be used instead
 
 # CIDR blocks for the public subnets
-public_subnet_cidrs: ['10.0.1.0/24', '10.0.2.0/24']
+public_subnet_cidrs: ["10.0.1.0/24", "10.0.2.0/24"]
 
 # How many web servers to deploy behind the load balancer
 web_servers_count: 2
@@ -67,7 +69,7 @@ wp_db_name: wordpress
 
 # Title to assign to the Wordpress site template;
 # Will appear on top of home page
-wp_web_title: Tux the penguin
+wp_web_title: "Tux's world"
 
 # Email to assign to the Wordpress admin panel user;
 # env WP_ADMIN_EMAIL could also be used instead

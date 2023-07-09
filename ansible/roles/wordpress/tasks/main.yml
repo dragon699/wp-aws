@@ -1,3 +1,9 @@
+- name: 'recreate {{ web_dir }}'
+  file:
+    path: '{{ web_dir }}'
+    state: '{{ item }}'
+  loop: ['absent', 'directory']
+
 - name: 'ensure correct {{ web_dir }} ownership'
   file:
     path: '{{ web_dir }}'
@@ -25,9 +31,23 @@
 
 - name: 'ensure correct {{ web_dir }} permissions'
   file:
-    state: directory
+    state: '{{ item.type | default("directory") }}'
     path: '{{ web_dir }}/{{ item.dir }}'
     mode: '{{ item.mode }}'
   loop: '{{ wordpress_permissions }}'
   loop_control:
     label: '{{ item.dir }}'
+
+- name: 'update blog details'
+  shell: 'wp {{ item.cmd_arg }}'
+  become: false
+  loop: '{{ wordpress_blog }}'
+  loop_control:
+    label: '{{ item.name }}'
+  args:
+    chdir: '{{ web_dir }}'
+
+- name: 'update home title'
+  template:
+    src: 'home_template.html.j2'
+    dest: '{{ wp_home_template_path }}'

@@ -19,4 +19,5 @@ php_pkgs: [
 
 apache2_service: apache2
 apache2_pkg: apache2
+apache2_vhost_dir: /etc/apache2/sites-available
 mariadb_pkg: mariadb-client

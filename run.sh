@@ -14,6 +14,7 @@ function run_deployment() {
     install_requirements
     parse_vars
     provision
+    show_outputs
     remove_venv
 }
 
