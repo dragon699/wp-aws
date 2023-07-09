@@ -1,6 +1,6 @@
-# dawdaw
-## dawadwaw
+# wp-aws
 
-### dawdawawd
+##### Create your Wordpress cluster in just a few minutes
 
-#### dawdaw
+### Usage:
+$ dwadaw 
