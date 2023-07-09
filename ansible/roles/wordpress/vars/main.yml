@@ -11,7 +11,7 @@ wpcli_url: https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.
 wpcli_install_dir: '/usr/local/bin'
 
 # Wordpress credentials and values are directly fetched;
-# from extra vars and are all available inside the vars_config.yml file;
+# from extra vars and are all available inside the config/vars_config.yml file;
 wordpress_install_commands: [
   {
     name: 'download wordpress',

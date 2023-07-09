@@ -184,6 +184,8 @@ function provision() {
 
     cd ${BUILD_DIR}/terraform
 
+    exit
+
     # Disable internet access for MariaDB;
     log "Updating AWS infrastructure.."
     log "Disabling network access for MariaDB..\n" 0
