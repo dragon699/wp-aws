@@ -32,7 +32,8 @@ resource "aws_instance" "wp_web_instances" {
     key_name        = aws_key_pair.ssh_key.key_name
     associate_public_ip_address = true
 
-    subnet_id       = aws_subnet.wp_subnets[count.index].id
+    #subnet_id       = aws_subnet.wp_subnets[count.index].id
+    subnet_id       = element(aws_subnet.wp_subnets, count.index % length(aws_subnet.wp_subnets)).id
     vpc_security_group_ids = [aws_security_group.wp_web_sg.id]
 
     tags = {
