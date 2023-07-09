@@ -5,7 +5,7 @@ import os, yaml, json, subprocess
 ENV_ONLY_VARS = ['aws_access_key_id', 'aws_secret_access_key', 'region']
 
 SCRIPT_ROOT_DIR = '{}/../'.format(os.path.dirname(os.path.realpath(__file__)))
-CONFIG_VARS_FILE = '{}/config/config_vars.yml'.format(SCRIPT_ROOT_DIR)
+VARS_CONFIG_FILE = '{}/vars_config.yml'.format(SCRIPT_ROOT_DIR)
 USER_VARS_FILE = '{}/vars.yml'.format(SCRIPT_ROOT_DIR)
 DOCS_VARS_FILE = '{}/README.md'.format(SCRIPT_ROOT_DIR)
 
@@ -29,7 +29,7 @@ def get_dict_item(item, k, v):
 
 class VarsGenerator:
     def __init__(self):
-        self.config_data = read_yaml(CONFIG_VARS_FILE)
+        self.config_data = read_yaml(VARS_CONFIG_FILE)
 
     def generate_vars_file(self):
         log('Generating variables file..')
@@ -41,7 +41,7 @@ class VarsGenerator:
             '# To use this file, simply override the variables you want;\n',
             '# and run ./run.sh in the same directory;\n',
             '# Many of the variables could be used as env variables;\n',
-            '# Refer to config/config_vars.yml for complete details for each var;\n\n'
+            '# Refer to config/vars_config.yml for complete details for each var;\n\n'
             '# After completion, a new copy of the file will be generated;\n\n\n'
         ]
 
@@ -76,7 +76,7 @@ class VarsParser:
         self.read_vars_files()
 
     def read_vars_files(self):
-        self.config_data = read_yaml(CONFIG_VARS_FILE)
+        self.config_data = read_yaml(VARS_CONFIG_FILE)
 
         try:
             self.user_data = read_yaml(USER_VARS_FILE)
@@ -146,15 +146,15 @@ if __name__ == '__main__':
         generator.generate_vars_file()
 
     else:
-        try:
-            parser = VarsParser()
+        #try:
+        parser = VarsParser()
 
-        except:
-            log('Usage: python3 ./parser.py parse_vars')
-            log(' => Transforms parameters from the vars.yml file to terraform/ansible CLI args', True)
-            log('Second-scenario Usage: python3 ./parser.py generate_docs', True)
-            log(' => Updates README.md and generates the vars file, sourced from {}'.format(CONFIG_VARS_FILE), True)
-            exit(1)
+        #except:
+        #    log('Usage: python3 ./parser.py parse_vars')
+        #    log(' => Transforms parameters from the vars.yml file to terraform/ansible CLI args', True)
+        #    log('Second-scenario Usage: python3 ./parser.py generate_docs', True)
+        #    log(' => Updates README.md and generates the vars file, sourced from {}'.format(VARS_CONFIG_FILE), True)
+        #    exit(1)
 
         parser.parse()
 

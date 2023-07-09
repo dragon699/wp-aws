@@ -12,7 +12,7 @@ wpcli_install_dir: /usr/local/bin
 
 # Wordpress credentials and values are directly fetched;
 # from extra vars and are all available inside;
-# the <project_root>/config/config_vars.yml file;
+# the vars_config.yml file;
 wordpress_install_commands: [
   {
     name: 'download wordpress',
