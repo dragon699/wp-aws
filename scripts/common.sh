@@ -38,7 +38,6 @@ function parse_vars() {
     exit 1
     
     CMD_ARGS="$(${PYTHON_BIN} ./scripts/parser.py parse_vars)"
-   
     SET_ENVS="$(echo ${CMD_ARGS} | jq -r '.env')"
     TERRAFORM_CMD_ARGS="$(echo ${CMD_ARGS} | jq -r '.terraform')"
     ANSIBLE_CMD_ARGS="$(echo ${CMD_ARGS} | jq -r '.ansible')"
@@ -49,6 +48,7 @@ function parse_vars() {
     log "OK, i have everything i need!\n" 0
 }
 
+# Creates a build directory and a distruct script;
 function create_build_dir() {
     log "Creating ${BUILD_DIR}.."
     mkdir -p ${BUILD_DIR}
@@ -66,43 +66,33 @@ function create_build_dir() {
     chmod +x ${DESTRUCT_FILE}
 }
 
+# Verifies venv and pip installation and starts;
+# a virtual environment;
 function create_venv() {
-    function verify_module() {
-        ${PYTHON_BIN} -c "import $1" &> /dev/null
+    function install_module() {
+        PKG="python${PYTHON_VERSION}-${1}"
 
-        if [[ $? != 0 ]]; then
-            sudo apt-get update
-            log "Installing $1.." 0
-            sudo apt-get install python${PYTHON_VERSION}-$1 -y &> /dev/null
-        fi
+        sudo apt-get update &> /dev/null
+        log "Installing ${PKG}.." 0
+        sudo apt-get install ${PKG} -y &> /dev/null
 
         [[ $? != 0 ]] && \
-        log "Installation failed; please, install python3-venv manually and try again" 1
-        rm -Rf ./venv
-    }
-
-    function verify_pkg() {
-        sudo dpkg -s $1 &> /dev/null
-
-        if [[ $? != 0 ]]; then
-            sudo apt-get update
-            log "Installing $1.." 0
-            sudo apt-get install $1 -y &> /dev/null
-        fi
-
-        [[ $? != 0 ]] && \
-        log "Installation failed; please, install $1 apt package manually and try again" 1
+        log "Installation failed; please, install ${PKG} manually and try again" 1
         rm -Rf ./venv
     }
 
     REQUIRED_MODULES=(venv pip)
-    REQUIRED_PKGS=(python${PYTHON_VERSION}-venv)
 
     for MD in ${REQUIRED_MODULES[@]}; do
-        verify_module ${MD}
+        ${PYTHON_BIN} -c "import $1" &> /dev/null
+        
+        [[ $? != 0 ]] && install_module ${MD}
     done
 
-    verify_pkg ${REQUIRED_PKGS[0]}
+    # Workaround for venv package, as it can still be imported in python;
+    # even if not installed;
+    sudo dpkg -s python${PYTHON_VERSION}-venv &> /dev/null
+    [[ $? != 0 ]] && install_module python${PYTHON_VERSION}-venv
 
     # Start virtual environment after ensuring above modules;
     log "Creating virtual environment.."
@@ -115,14 +105,7 @@ function create_venv() {
     ${PYTHON_BIN} -m pip install --upgrade pyyaml &> /dev/null
 }
 
-function remove_venv() {
-    log "Destroying virtual environment.."
-    deactivate
-    
-    VENV=false
-    [[ "$1" == rm_build_dir ]] && rm -Rf ${BUILD_DIR}
-}
-
+# Verifies terraform and pip packages installation;
 function install_requirements() {
     VENV_PKGS="ansible boto3 botocore jinja2"
 
@@ -145,6 +128,19 @@ function install_requirements() {
     fi
 }
 
+# Removes the virtual environment;
+# and the build directory in specific cases;
+function remove_venv() {
+    log "Destroying virtual environment.."
+    deactivate
+    
+    VENV=false
+    [[ "$1" == rm_build_dir ]] && rm -Rf ${BUILD_DIR}
+}
+
+# Creates the ssh private key file after terraform;
+# is done provisioning and whenever the user did not;
+# provide a public key;
 function create_ssh_file() {
     NEW_SSH_KEY="$(terraform output -json private_key | jq -r '.[0].private_key_openssh')"
     NEW_SSH_KEY_FILE="${BUILD_DIR}/wp-aws-ssh-private"
@@ -153,6 +149,8 @@ function create_ssh_file() {
     chmod 600 ${NEW_SSH_KEY_FILE}
 }
 
+# Runs terraform, creates an ansible inventory out of it;
+# and installs apache2, php, mariadb, wordpress on EC2s;
 function provision() {
     TERRAFORM_PLAN_CMD="terraform plan -out=tfplan -input=false -no-color ${TERRAFORM_CMD_ARGS}"
 
@@ -215,6 +213,8 @@ function provision() {
     log "Done!\n" 0
 }
 
+# Used only from the destruct script to;
+# destroy the existing infrastructure with terraform;
 function destruct() {
     BUILD_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &> /dev/null && pwd)/.."
     REQUIRED_VARS=(AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY AWS_REGION)
@@ -237,6 +237,8 @@ function destruct() {
     log "Done!\n" 0
 }
 
+# Shows all necessary outputs the user;
+# is interested in;
 function show_outputs() {
     function render_instance_data() {
         if [[ $1 == db ]]; then
