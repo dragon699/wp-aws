@@ -8,9 +8,9 @@ import os, yaml, json, re
 ENV_ONLY_VARS = ['aws_access_key_id', 'aws_secret_access_key']
 
 SCRIPT_ROOT_DIR = '{}/../'.format(os.path.dirname(os.path.realpath(__file__)))
-VARS_CONFIG_FILE = '{}/config/vars_config.yml'.format(SCRIPT_ROOT_DIR)
-USER_VARS_FILE = '{}/vars.yml'.format(SCRIPT_ROOT_DIR)
-DOCS_VARS_FILE = '{}/README.md'.format(SCRIPT_ROOT_DIR)
+VARS_CONFIG_FILE = '{}config/vars_config.yml'.format(SCRIPT_ROOT_DIR)
+USER_VARS_FILE = '{}vars.yml'.format(SCRIPT_ROOT_DIR)
+DOCS_VARS_FILE = '{}README.md'.format(SCRIPT_ROOT_DIR)
 
 
 def log(msg, cut=False):

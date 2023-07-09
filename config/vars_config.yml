@@ -2,6 +2,7 @@
   description: |-
     AWS Region to deploy the cluster to;
     Env AWS_REGION could also be used instead
+  default: eu-west-2
   tags: ['terraform/region']
   required: true
   environment: AWS_REGION

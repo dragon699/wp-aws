@@ -71,6 +71,7 @@ function create_venv() {
         ${PYTHON_BIN} -c "import $1" &> /dev/null
 
         if [[ $? != 0 ]]; then
+            sudo apt-get update
             log "Installing $1.." 0
             sudo apt-get install python${PYTHON_VERSION}-$1 -y &> /dev/null
         fi
@@ -80,11 +81,28 @@ function create_venv() {
         rm -Rf ./venv
     }
 
+    function verify_pkg() {
+        sudo dpkg -s $1 &> /dev/null
+
+        if [[ $? != 0 ]]; then
+            sudo apt-get update
+            log "Installing $1.." 0
+            sudo apt-get install $1 -y &> /dev/null
+        fi
+
+        [[ $? != 0 ]] && \
+        log "Installation failed; please, install $1 apt package manually and try again" 1
+        rm -Rf ./venv
+    }
+
     REQUIRED_MODULES=(venv pip)
+    REQUIRED_PKGS=(python${PYTHON_VERSION}-venv)
 
     for MD in ${REQUIRED_MODULES[@]}; do
         verify_module ${MD}
     done
+
+    verify_pkg ${REQUIRED_PKGS[0]}
 
     # Start virtual environment after ensuring above modules;
     log "Creating virtual environment.."
@@ -111,7 +129,7 @@ function install_requirements() {
     log "Verifying requirements.."
     ${PYTHON_BIN} -m pip install --upgrade ${VENV_PKGS} &> /dev/null
 
-    terraform -v > /dev/null
+    terraform -v &> /dev/null
 
     if [[ $? != 0 ]]; then
         log "Installing terraform.." 0
@@ -213,7 +231,8 @@ function destruct() {
     [[ $? != 0 ]] && log "Destruction failed! Leftovers might be still available, please verify manually" && exit
 
     log "Removing ${BUILD_DIR}.."
-    cd ${HOME} && rm -Rf ${BUILD_DIR}
+    cd ${HOME}
+    rm -Rf ${BUILD_DIR}
 
     log "Done!\n" 0
 }
