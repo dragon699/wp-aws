@@ -2,7 +2,10 @@ from sys import argv
 import os, yaml, json, subprocess
 
 
-ENV_ONLY_VARS = ['aws_access_key_id', 'aws_secret_access_key', 'region']
+# Values inside ENV_ONLY_VARS will be taken from vars.yaml like others;
+# and converted to ENV alternatives, but will not be;
+# passed to ansible/terraform CLI;
+ENV_ONLY_VARS = ['aws_access_key_id', 'aws_secret_access_key']
 
 SCRIPT_ROOT_DIR = '{}/../'.format(os.path.dirname(os.path.realpath(__file__)))
 VARS_CONFIG_FILE = '{}/vars_config.yml'.format(SCRIPT_ROOT_DIR)
@@ -41,7 +44,7 @@ class VarsGenerator:
             '# To use this file, simply override the variables you want;\n',
             '# and run ./run.sh in the same directory;\n',
             '# Many of the variables could be used as env variables;\n',
-            '# Refer to config/vars_config.yml for complete details for each var;\n\n'
+            '# Refer to vars_config.yml for complete details for each var;\n\n'
             '# After completion, a new copy of the file will be generated;\n\n\n'
         ]
 

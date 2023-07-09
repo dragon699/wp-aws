@@ -1,18 +1,17 @@
 node_index: '{{ inventory_hostname.split("-")[-2] }}'
 
-wp_home_page_title: Linux Namespaces
+wp_home_page_title: Namespaces
 wp_home_template_path: '{{ web_dir }}/wp-content/themes/twentytwentythree/templates/home.html'
 
 wp_blog_file: linux_namespaces.txt
-wp_blog_title: '{{ wp_blog_file.split("_")[:-1] | join(" ") | title }}'
+wp_blog_title: '{{ (wp_blog_file.split("_") | join(" ") | title)[:-4] }}'
 wp_blog_text: '{{ lookup("file", (playbook_dir + "/../content/" + wp_blog_file)) }}'
 
 wpcli_url: https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar
-wpcli_install_dir: /usr/local/bin
+wpcli_install_dir: '/usr/local/bin'
 
 # Wordpress credentials and values are directly fetched;
-# from extra vars and are all available inside;
-# the vars_config.yml file;
+# from extra vars and are all available inside the vars_config.yml file;
 wordpress_install_commands: [
   {
     name: 'download wordpress',
@@ -47,5 +46,5 @@ wordpress_permissions: [
   {dir: 'wp-content/plugins', mode: '0755'},
   {dir: 'wp-content/uploads', mode: '0755'},
   {dir: 'index.php', mode: '0644', type: 'file'},
-  {dir: 'wp-config.php', mode: '0640', type: 'file'}
+  {dir: 'wp-config.php', owner: 'www-data', mode: '0644', type: 'file'}
 ]

@@ -29,7 +29,7 @@
   vars:
     dest_item: '{{ item.split(".")[:-1] | join(".") }}'
 
-- name: 'enable db remote connections'
+- name: 'enable remote connections'
   lineinfile:
     path: '{{ mariadb_config }}'
     backup: true

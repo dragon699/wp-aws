@@ -24,3 +24,7 @@
     include_role:
       name: wordpress
     when: ('web_servers' in group_names)
+
+#  - name: Set up optimization schedule
+#    import_tasks: tasks/optimization.yml
+#    when: ('db' in group_names)

@@ -29,11 +29,13 @@
   args:
     chdir: '{{ web_dir }}'
 
-- name: 'ensure correct {{ web_dir }} permissions'
+- name: 'ensure correct permissions'
   file:
     state: '{{ item.type | default("directory") }}'
     path: '{{ web_dir }}/{{ item.dir }}'
     mode: '{{ item.mode }}'
+    owner: '{{ item.owner | default(omit) }}'
+    group: '{{ item.owner | default(omit) }}'
   loop: '{{ wordpress_permissions }}'
   loop_control:
     label: '{{ item.dir }}'
