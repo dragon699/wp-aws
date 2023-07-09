@@ -1,3 +1,4 @@
+# create load balancer
 resource "aws_lb" "wp_web_lb" {
     name = "wp-web-lb-${local.build_id}"
     internal = false
@@ -6,6 +7,7 @@ resource "aws_lb" "wp_web_lb" {
     subnets = aws_subnet.wp_subnets[*].id
 }
 
+# create a target group
 resource "aws_lb_target_group" "wp_web_lb_tg" {
     name = "wp-web-lb-target-group-${local.build_id}"
     protocol = "HTTP"
@@ -13,12 +15,14 @@ resource "aws_lb_target_group" "wp_web_lb_tg" {
     vpc_id = aws_vpc.wp_vpc.id
 }
 
+# attach group to load balancer
 resource "aws_lb_target_group_attachment" "attach_instances" {
     count = length(aws_instance.wp_web_instances)
     target_group_arn = aws_lb_target_group.wp_web_lb_tg.arn
     target_id = aws_instance.wp_web_instances[count.index].id
 }
 
+# attach http listener to load balancer
 resource "aws_lb_listener" "wp_web_lb_listener" {
   load_balancer_arn = aws_lb.wp_web_lb.arn
   port              = var.port_web

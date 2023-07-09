@@ -33,7 +33,7 @@ resource "aws_security_group" "wp_db_sg" {
 
 # Attaching the rules for the DB group separately from
 # the creation of the group itself, as there's a rule that
-# references the private IP, visible after the vm creation
+# references the private IP, visible only after the vm creation
 resource "aws_vpc_security_group_ingress_rule" "attach_rules_for_db" {
     count = length(local.db_rules["ingress"])
     security_group_id = aws_security_group.wp_db_sg.id

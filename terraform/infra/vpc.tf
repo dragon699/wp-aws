@@ -1,3 +1,4 @@
+# obtain available availability zones for the current region
 data "aws_availability_zones" "zones" { state = "available" }
 
 resource "aws_vpc" "wp_vpc" {
@@ -9,6 +10,7 @@ resource "aws_vpc" "wp_vpc" {
   }
 }
 
+# create subnets
 resource "aws_subnet" "wp_subnets" {
   count = 2
   map_public_ip_on_launch = true
@@ -23,6 +25,7 @@ resource "aws_subnet" "wp_subnets" {
   }
 }
 
+# create internet gateway
 resource "aws_internet_gateway" "wp_igw" {
   vpc_id = aws_vpc.wp_vpc.id
 
@@ -32,6 +35,7 @@ resource "aws_internet_gateway" "wp_igw" {
   }
 }
 
+# create routing preferences for the internet gateway
 resource "aws_route_table" "wp_public_rt" {
   vpc_id = aws_vpc.wp_vpc.id
 
@@ -46,6 +50,7 @@ resource "aws_route_table" "wp_public_rt" {
   }
 }
 
+# attach routing to the public subnet (the one for the web servers)
 resource "aws_route_table_association" "wp_public_rt_route" {
   count = 2
   subnet_id = aws_subnet.wp_subnets[count.index].id

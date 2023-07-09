@@ -1,3 +1,4 @@
+# obtain available ubuntu images
 data "aws_ami" "wp_ami" {
     most_recent = true
 
@@ -10,17 +11,20 @@ data "aws_ami" "wp_ami" {
     }
 }
 
+# generate new key (if required)
 resource "tls_private_key" "new_ssh_key" {
   count = (var.ssh_key == "create") ? 1 : 0
   algorithm = "RSA"
   rsa_bits  = 4096
 }
 
+# put the key into an AWS key-pair
 resource "aws_key_pair" "ssh_key" {
   key_name   = "wp-key-${local.build_id}" # extracts current build ID from the path name
   public_key = (var.ssh_key == "create") ? tls_private_key.new_ssh_key[0].public_key_openssh : var.ssh_key
 }
 
+# create VMs for the web servers
 resource "aws_instance" "wp_web_instances" {
     count           = var.web_instance_count
     ami             = data.aws_ami.wp_ami.id
@@ -38,6 +42,7 @@ resource "aws_instance" "wp_web_instances" {
     }
 }
 
+# create VM for the database
 resource "aws_instance" "wp_db_instance" {
     ami             = data.aws_ami.wp_ami.id
     instance_type   = var.db_instance_type

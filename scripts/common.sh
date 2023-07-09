@@ -200,11 +200,7 @@ function provision() {
 }
 
 function destruct() {
-    BUILD_DIR=$(
-        cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &> /dev/null && \
-        pwd
-    )
-    
+    BUILD_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &> /dev/null && pwd)/.."
     REQUIRED_VARS=(AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY AWS_REGION)
 
     for VAR in ${REQUIRED_VARS[@]}; do
@@ -253,7 +249,7 @@ function show_outputs() {
     SSH_FILE="${HOME}/.ssh/id_rsa"
 
     log "Completed!"
-    log "Destroy everything with /home/skull/.wp-aws/3600/destroy.sh;" 0
+    log "Destroy everything with ${BUILD_DIR}/destroy.sh;" 0
     log "Load Balanced URL: http://${DNS_LOAD_BALANCER};\n" 0
 
     if [[ ${CREATE_SSH} == true ]]; then
