@@ -13,7 +13,7 @@ Clone this project, edit desired values in **vars.yml**, then
 $ ./run.sh
 ```
 
-##### If you want to be able to SSH into the created VMs using your key, make sure to change **ssh-key** variable from _create_ to _your_key_
+If you want to be able to SSH into the created VMs using your key, make sure to change **ssh-key** variable from "**_create_**" to **_your_public_key_**
 
 ### General info
 - The script first deploys the network resources and the VMs with enabled internet access. After the configuration management part is done, the database internet access gets completely disabled and remains open only on the database port defined in **vars.yml** and allows connections only from the created web servers
