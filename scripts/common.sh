@@ -92,7 +92,7 @@ function create_venv() {
     # Workaround for venv package, as it can still be imported in python;
     # even if not installed;
     sudo dpkg -s python${PYTHON_VERSION}-venv &> /dev/null
-    [[ $? != 0 ]] && install_module python${PYTHON_VERSION}-venv
+    [[ $? != 0 ]] && install_module venv
 
     # Start virtual environment after ensuring above modules;
     log "Creating virtual environment.."
