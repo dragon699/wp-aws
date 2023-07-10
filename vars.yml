@@ -69,7 +69,7 @@ wp_db_name: wordpress
 
 # Title to assign to the Wordpress site template;
 # Will appear on top of home page
-wp_web_title: Linux facts
+wp_web_title: Linux
 
 # Email to assign to the Wordpress admin panel user;
 # env WP_ADMIN_EMAIL could also be used instead
