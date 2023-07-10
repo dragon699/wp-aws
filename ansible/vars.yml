@@ -1,11 +1,19 @@
 # Default variables;
 # Values will be overwritten by extra vars;
-# when launched;
+# when playbook is launched;
 web_hostname: '{{ hostname }} '
 web_port: '{{ port_web }}'
 db_port: '{{ port_db }}'
 
+# Addresses obtained from terraform;
+# when playbook is launched;
 web_instances_addresses: "{{ web_addresses.split() }}"
 db_instance_address: "{{ db_address }}"
 
+# Directories;
 web_dir: "/var/www/html"
+mariadb_dir: "/var/lib/mysql"
+
+# DB Schedule optimization script settings;
+optimize_logs_dir: "{{ mariadb_dir }}/optimization_logs"
+cron_command: "/bin/bash -c '{{ ansible_python_interpreter }} {{ optimize_script }} {{ wp_db_name }} {{ optimize_logs_dir }}'"

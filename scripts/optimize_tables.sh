@@ -1,8 +1,11 @@
 #!/bin/bash
 
 
+TODAY=($(date | awk '{print $2,$3}'))
+
 DB=${1-"wordpress"}
-LOG_FILE=${2-"/var/log/db_optimization.log"}
+LOG_DIR=${2-"/var/lib/mysql"}
+LOG_FILE="${LOG_DIR}/${TODAY[0]}-${TODAY[1]}-${DB}.log}"
 
 QUERIES=(
     # Get table names;
@@ -16,13 +19,12 @@ QUERIES=(
     "OPTIMIZE TABLE"
 )
 
-echo "----> $DB $LOG_FILE"
 function run_query() {
     mariadb -D ${DB} -s -e \"${1}\"
 }
 
 function log() {
-    echo -e " > $1" | tee -a ${LOG_FILE}
+    echo -e "$1" | tee -a ${LOG_FILE}
 }
 
 function optimize_tables() {
@@ -42,12 +44,11 @@ function run() {
     RESULTED_SIZE=$(run_query "${QUERIES[1]}" | tail +2)
 
     log "Optimization completed!\n"
-
     show_output
 }
 
 function show_output() {
-    log: "Comparsion:\n"
+    log "Comparsion:\n"
 
     log "\t\tTable\t\t|\t\t[MB] Size before\t\t|\t\t[MB] Size after\t\t"
     

@@ -69,38 +69,35 @@ function create_build_dir() {
 # Verifies venv, ansible and pip installation;
 # and starts a virtual environment;
 function create_venv() {
-    function install_module() {
-        [[ $1 == "ansible" ]] && PKG=$1 || \
-        PKG="python${PYTHON_VERSION}-${1}"
+    function install_pkg() {
+        if [[ -z $_UPDATED ]]; then
+            sudo apt-get update &> /dev/null
+            _UPDATED=true
+        fi
 
-        sudo apt-get update &> /dev/null
-        log "Installing ${PKG}.." 0
-        sudo apt-get install ${PKG} -y &> /dev/null
+        log "Installing ${1}.." 0
+        sudo apt-get install ${1} -y &> /dev/null
 
         [[ $? != 0 ]] && \
-        log "Installation failed; please, install ${PKG} manually and try again" 1
+        log "Installation failed; please, install ${1} manually and try again" 1
         rm -Rf ./venv
     }
 
     function check_pkg() {
-        sudo dpkg -s $1 &> /dev/null
-        [[ $? != 0 ]] && install_module $1
+        [[ $1 == "ansible" ]] && PKG=$1 || \
+        PKG="python3-${1}"
+
+        sudo dpkg -s ${PKG} &> /dev/null
+        [[ $? != 0 ]] && install_pkg $PKG
     }
 
-    REQUIRED_MODULES=(pip)
-    REQUIRED_PKG=(ansible venv)
-
-    for MD in ${REQUIRED_MODULES[@]}; do
-        ${PYTHON_BIN} -c "import $MD" &> /dev/null
-        
-        [[ $? != 0 ]] && install_module ${MD}
-    done
+    REQUIRED_PKG=(ansible venv pip)
 
     for PKG in ${REQUIRED_PKG[@]}; do
         check_pkg ${PKG}
     done
 
-    # Start virtual environment after ensuring above modules;
+    # Start virtual environment after ensuring above packages;
     log "Creating virtual environment.."
     ${PYTHON_BIN} -m venv venv && source ./venv/bin/activate
 
@@ -238,9 +235,9 @@ function destruct() {
 
     log "Removing ${BUILD_DIR}.."
     cd ${HOME}
-    rm -Rf ${BUILD_DIR}
 
-    log "Done!\n" 0
+    log "Done!"
+    log "It is now safe to remove ${BUILD_DIR}"
 }
 
 # Shows all necessary outputs the user;

@@ -110,7 +110,7 @@
   environment: WP_DB_NAME
 
 - name: wp_web_title
-  default: Linux facts
+  default: Linux
   description: |-
     Title to assign to the Wordpress site template;
     Will appear on top of home page

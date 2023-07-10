@@ -1,0 +1,27 @@
+- name: 'mariadb : ensure crontab installation'
+  apt:
+    name: cron
+
+- name: 'mariadb : ensure crontab service is running'
+  service:
+    name: cron
+    state: started
+
+- name: 'mariadb : create optimization script directory'
+  file:
+    path: '{{ optimize_logs_dir }}'
+    state: directory
+
+- name: 'mariadb : copy optimization script'
+  copy:
+    src: ../scripts/optimize_tables.sh
+    dest: '{{ mariadb_dir }}/optimize_tables.sh'
+    mode: 0755
+
+- name: 'mariadb : schedule optimization script''
+  cron:
+    name: tables_optimization
+    job: '{{ mariadb_dir }}/optimize_tables.sh'
+    hour: '4'
+    minute: '0'
+    weekday: '0'

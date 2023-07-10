@@ -1,4 +1,4 @@
-CREATE DATABASE {{ wp_db_name}};
+CREATE DATABASE {{ wp_db_name }};
 
 {% for wp_host in web_instances_addresses %}
 CREATE USER '{{ wp_db_user }}-{{ loop.index0 }}'@'{{ wp_host }}' IDENTIFIED BY '{{ wp_db_passwd }}';
