@@ -66,10 +66,11 @@ function create_build_dir() {
     chmod +x ${DESTRUCT_FILE}
 }
 
-# Verifies venv and pip installation and starts;
-# a virtual environment;
+# Verifies venv, ansible and pip installation;
+# and starts a virtual environment;
 function create_venv() {
     function install_module() {
+        [[ $1 == "ansible" ]] && PKG=$1 || \
         PKG="python${PYTHON_VERSION}-${1}"
 
         sudo apt-get update &> /dev/null
@@ -81,7 +82,7 @@ function create_venv() {
         rm -Rf ./venv
     }
 
-    REQUIRED_MODULES=(venv pip)
+    REQUIRED_MODULES=(ansible venv pip)
 
     for MD in ${REQUIRED_MODULES[@]}; do
         ${PYTHON_BIN} -c "import $MD" &> /dev/null
@@ -107,7 +108,7 @@ function create_venv() {
 
 # Verifies terraform and pip packages installation;
 function install_requirements() {
-    VENV_PKGS="ansible boto3 botocore jinja2"
+    VENV_PKGS="boto3 botocore jinja2"
 
     log "Verifying requirements.."
     ${PYTHON_BIN} -m pip install --upgrade ${VENV_PKGS} &> /dev/null
