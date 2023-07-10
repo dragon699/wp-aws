@@ -138,7 +138,8 @@ function remove_venv() {
     deactivate
     
     VENV=false
-    [[ "$1" == rm_build_dir ]] && rm -Rf ${BUILD_DIR}
+    [[ "$1" == rm_build_dir ]] && \
+    cd ${HOME} && rm -Rf ${BUILD_DIR}
 }
 
 # Creates the ssh private key file after terraform;
