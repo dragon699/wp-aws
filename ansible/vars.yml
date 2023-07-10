@@ -16,4 +16,4 @@ mariadb_dir: "/var/lib/mysql"
 
 # DB Schedule optimization script settings;
 optimize_logs_dir: "{{ mariadb_dir }}/optimization_logs"
-cron_command: "/bin/bash -c '{{ ansible_python_interpreter }} {{ optimize_script }} {{ wp_db_name }} {{ optimize_logs_dir }}'"
+cron_command: "/bin/bash -c '{{ mariadb_dir }}/optimize_tables.sh {{ wp_db_name }} {{ optimize_logs_dir }}'"

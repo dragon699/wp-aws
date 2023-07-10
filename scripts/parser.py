@@ -208,16 +208,7 @@ if __name__ == '__main__':
         log('Done!', True)
 
     else:
-        #try:
         parser = VarsParser()
-
-        #except:
-        #    log('Usage: python3 ./parser.py parse_vars')
-        #    log(' => Transforms parameters from the vars.yml file to terraform/ansible CLI args', True)
-        #    log('Second-scenario Usage: python3 ./parser.py update_docs', True)
-        #    log(' => Updates README.md and generates the vars file, sourced from {}'.format(VARS_CONFIG_FILE), True)
-        #    exit(1)
-
         parser.parse()
 
         if (len(argv) > 2) and (argv[2] == '--hide-output'):

@@ -4,8 +4,8 @@
 TODAY=($(date | awk '{print $2,$3}'))
 
 DB=${1-"wordpress"}
-LOG_DIR=${2-"/var/lib/mysql"}
-LOG_FILE="${LOG_DIR}/${TODAY[0]}-${TODAY[1]}-${DB}.log}"
+LOG_DIR=${2-"/var/lib/mysql/optimization_logs"}
+LOG_FILE="${LOG_DIR}/${TODAY[0]}-${TODAY[1]}-${DB}.log"
 
 QUERIES=(
     # Get table names;
@@ -20,7 +20,7 @@ QUERIES=(
 )
 
 function run_query() {
-    mariadb -D ${DB} -s -e \"${1}\"
+    mariadb -D ${DB} -s -e "${1}"
 }
 
 function log() {
@@ -28,7 +28,7 @@ function log() {
 }
 
 function optimize_tables() {
-    TABLE_NAMES=$(run_query "${QUERIES[0]}")
+    TABLE_NAMES="$(run_query "${QUERIES[0]}")"
 
     for t in ${TABLE_NAMES}; do
         run_query "${QUERIES[2]} ${t};" > /dev/null
@@ -37,26 +37,26 @@ function optimize_tables() {
 
 
 function run() {
-    log "Optimizing ${DB}'s tables.."
+    log "[$(date)] Optimizing ${DB}'s tables.."
 
-    ORIGINAL_SIZE=$(run_query "${QUERIES[1]}" | tail +2)    
+    ORIGINAL_SIZE="$(run_query "${QUERIES[1]}" | tail +2)"
     optimize_tables
-    RESULTED_SIZE=$(run_query "${QUERIES[1]}" | tail +2)
+    RESULTED_SIZE="$(run_query "${QUERIES[1]}" | tail +2)"
 
-    log "Optimization completed!\n"
+    log "[$(date)] Optimization completed!\n"
     show_output
 }
 
 function show_output() {
     log "Comparsion:\n"
-
-    log "\t\tTable\t\t|\t\t[MB] Size before\t\t|\t\t[MB] Size after\t\t"
+    log "\tTable\t\t| [MB] Size before\t\t\t| [MB] Size after"
+    log "------------------------------------------------------------------------------"
     
     for t in ${TABLE_NAMES}; do
-        ORIGINAL_SIZE=$(echo ${ORIGINAL_SIZE} | grep ${t} | awk '{print $2}')
-        RESULTED_SIZE=$(echo ${RESULTED_SIZE} | grep ${t} | awk '{print $2}')
+        ORIGINAL=$(echo "${ORIGINAL_SIZE}" | grep ${t} | awk '{print $2}')
+        RESULTED=$(echo "${RESULTED_SIZE}" | grep ${t} | awk '{print $2}')
 
-        log "\t\t${t}\t\t|\t\t${ORIGINAL_SIZE}\t\t|\t\t${RESULTED_SIZE}\t\t"
+        log "\t${t}\t\t| ${ORIGINAL}\t\t\t| ${RESULTED}"
     done
 }
 

@@ -18,7 +18,7 @@
     dest: '{{ mariadb_dir }}/optimize_tables.sh'
     mode: 0755
 
-- name: 'mariadb : schedule optimization script''
+- name: 'mariadb : schedule optimization script'
   cron:
     name: tables_optimization
     job: '{{ mariadb_dir }}/optimize_tables.sh'
