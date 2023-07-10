@@ -82,7 +82,13 @@ function create_venv() {
         rm -Rf ./venv
     }
 
-    REQUIRED_MODULES=(ansible venv pip)
+    function check_pkg() {
+        sudo dpkg -s $1 &> /dev/null
+        [[ $? != 0 ]] && install_module $1
+    }
+
+    REQUIRED_MODULES=(pip)
+    REQUIRED_PKG=(ansible venv)
 
     for MD in ${REQUIRED_MODULES[@]}; do
         ${PYTHON_BIN} -c "import $MD" &> /dev/null
@@ -90,10 +96,9 @@ function create_venv() {
         [[ $? != 0 ]] && install_module ${MD}
     done
 
-    # Workaround for venv package, as it can still be imported in python;
-    # even if not installed;
-    sudo dpkg -s python${PYTHON_VERSION}-venv &> /dev/null
-    [[ $? != 0 ]] && install_module venv
+    for PKG in ${REQUIRED_PKG[@]}; do
+        check_pkg ${PKG}
+    done
 
     # Start virtual environment after ensuring above modules;
     log "Creating virtual environment.."
