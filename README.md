@@ -7,6 +7,10 @@
   - ~~**venv**~~ - will be installed automatically
 - ~~**Ansible, Terraform**~~ - will be installed automatically
 
+- 
+## 🔗 Links
+[![portfolio](https://i.imgur.com/I8gDWGC.png)](https://grafana.com/oss/loki/)
+
 ### Usage
 Clone this project, edit desired values in **vars.yml**, then
 ```
