@@ -7,9 +7,12 @@
   - ~~**venv**~~ - will be installed automatically
 - ~~**Ansible, Terraform**~~ - will be installed automatically
 
-- 
-## 🔗 Links
-[![portfolio](https://i.imgur.com/I8gDWGC.png)](https://grafana.com/oss/loki/)
+
+## Overview
+This project aims to create a unified event tracking system for monitoring system and application metrics, as well as to setup a distributed log management, starting with ProCredit's mobile app.
+
+### Architecture
+The system will 
 
 ### Usage
 Clone this project, edit desired values in **vars.yml**, then
